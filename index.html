@@ -16,7 +16,7 @@ body{background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,san
 .top::after{content:"";display:block;width:min(100%,760px);height:1px;background:var(--line);margin:18px auto 0}
 h1{margin:0;font-family:"Bodoni MT","Didot","Baskerville",Georgia,"Times New Roman",serif;font-size:clamp(50px,10vw,72px);font-weight:700;font-style:normal;letter-spacing:-1.8px;line-height:1.02;color:var(--fg)}
 h1 span{color:var(--rose);font-size:.58em;vertical-align:.1em}
-.sub{margin:12px auto 0;max-width:42ch;color:var(--sub);font-size:13px;letter-spacing:.15px;line-height:1.55;opacity:.9}
+.sub{margin:12px auto 0;max-width:none;width:100%;color:var(--sub);font-size:clamp(10px,2.2vw,13px);letter-spacing:.1px;line-height:1.55;opacity:.9;white-space:nowrap}
 .rule{display:flex;align-items:center;gap:12px;max-width:760px;margin:0 auto 22px;padding:0 20px;color:var(--sub);font-size:12px;opacity:.35}
 .rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--line)}
 .date{display:flex;align-items:center;gap:14px;width:100%;max-width:760px;margin:7px auto 0;padding:5px 0;border:0;border-radius:0;background:transparent;font:700 12px "Helvetica Neue",Arial,sans-serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);white-space:nowrap}
@@ -382,7 +382,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <div class="body"><h2>The Crossword</h2><p>Our five-year puzzle.</p><a class="btn" href="crossword.html" style="text-decoration:none;display:inline-block">Play</a></div>
 </section>
 </main>
-<footer>Made for our 5 year anniversary. &#9829;</footer>
+<footer>Happy 5th anniversary &#9829;</footer>
 </div>
 
 <div id="game" hidden>
