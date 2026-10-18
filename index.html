@@ -412,7 +412,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
   <h3 class="pips-label">YOUR DOMINOES</h3>
   <div id="ptray"></div>
   <p class="pips-note">
-    Each row has a target sum. Match the pips in every row
+    Each outlined region has a rule: = means the pips add up to that number, < and > compare the total, ODD/EVEN is the total’s parity, and unlabeled regions have no rule. Use every domino exactly once. Match the pips in every row
     and use every domino exactly once.
   </p>
 </div>
@@ -539,32 +539,33 @@ sm.textContent=status(false);paint();
 
   // 1 = playable cell. The silhouette reads as the number 5.
   var shape = [
-    [1,1,1,1,1],
-    [1,1,1,0,0],
-    [1,1,1,1,1],
-    [0,0,0,1,1],
-    [1,1,1,1,1]
-  ];
+  [1,1,1,1,0],
+  [1,1,1,0,0],
+  [1,1,1,1,1],
+  [0,0,0,1,1],
+  [0,1,1,1,1]
+];
 
   // Each region is a set of board coordinates and one constraint.
   // type: "eq" exact sum, "lt" less than, "gt" greater than,
   // "odd"/"even" parity of sum, "same" all cells have equal pips.
   // These regions partition all 20 cells, so every cell has one clue.
   var regions = [
-    {id:0, cells:[[0,0],[0,1],[1,0]], type:"lt", target:10},
-    {id:1, cells:[[0,2],[0,3],[0,4]], type:"eq", target:8},
-    {id:2, cells:[[1,1],[1,2],[2,0]], type:"gt", target:2},
-    {id:3, cells:[[2,1],[2,2]], type:"same"},
-    {id:4, cells:[[2,3],[2,4],[3,3]], type:"odd"},
-    {id:5, cells:[[3,4],[4,3],[4,4]], type:"eq", target:10},
-    {id:6, cells:[[4,0],[4,1],[4,2]], type:"even"}
-  ];
+  {id:0, cells:[[3,3]], type:"even"},
+  {id:1, cells:[[0,2]], type:"none"},
+  {id:2, cells:[[0,0],[0,1]], type:"odd"},
+  {id:3, cells:[[1,1],[1,2]], type:"lt", target:2},
+  {id:4, cells:[[2,1],[2,2],[2,3]], type:"lt", target:6},
+  {id:5, cells:[[2,4],[3,4]], type:"lt", target:6},
+  {id:6, cells:[[1,0],[2,0]], type:"lt", target:6},
+  {id:7, cells:[[0,3]], type:"lt", target:3},
+  {id:8, cells:[[4,1],[4,2],[4,3],[4,4]], type:"none"}
+];
 
   // Ten dominoes (20 halves). Each half is a standard 0–6 pip value.
   var original = [
-    [0,1],[0,3],[2,3],[1,6],[0,4],
-    [2,4],[3,5],[0,2],[3,6],[2,3]
-  ];
+  [4,0],[5,1],[6,2],[0,3],[5,0],[2,2],[4,4],[3,5],[5,5]
+];
   var pieces, cells, selected, first, flipped, won, vertical, dragging = null;
 
   function say(text) { msg.textContent = text; }
@@ -706,7 +707,7 @@ sm.textContent=status(false);paint();
       el.style.borderLeft = (leftReg !== reg.id ? "3px solid "+edge : "1px solid rgba(50,30,40,.20)");
       el.style.borderRight = (rightReg !== reg.id ? "3px solid "+edge : "1px solid rgba(50,30,40,.20)");
       el.innerHTML="";
-      if (isRegionLabelCell(r,c,reg)) {
+      if (isRegionLabelCell(r,c,reg) && clueText(reg)) {
         var clue=document.createElement("span"); clue.className="pclue"; clue.textContent=clueText(reg);
         clue.style.cssText="background:#fff;color:#24151b;border:1.5px solid #24151b;font-size:10px;font-weight:900;letter-spacing:-.2px;max-width:calc(100% - 4px);min-width:0;padding:2px 3px;white-space:nowrap;box-shadow:0 1px 2px rgba(0,0,0,.16)";
         el.appendChild(clue);
@@ -747,6 +748,7 @@ sm.textContent=status(false);paint();
       else if(reg.type==="odd")ok=sum%2===1;
       else if(reg.type==="even")ok=sum%2===0;
       else if(reg.type==="same")ok=vals.every(function(v){return v===vals[0];});
+      else if(reg.type==="none")ok=true;
     }
     return {complete:complete,ok:ok,sum:sum,vals:vals};
   }
@@ -766,7 +768,7 @@ sm.textContent=status(false);paint();
     });
     var status=document.getElementById("prowstatus");
     if(status)status.textContent=reports.join(" · ");
-    if(!allFilled){say("Place all 10 dominoes before checking the puzzle.");return;}
+    if(!allFilled){say("Place all 9 dominoes before checking the puzzle.");return;}
     if(!allComplete){say("Some regions are not filled yet.");return;}
     if(allGood){won=true;say("Solved! Every region satisfies its clue. Five years, one perfect match. ♥");}
     else say("Not quite. Green outlines satisfy their clues; red outlines need another arrangement.");
