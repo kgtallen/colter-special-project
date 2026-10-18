@@ -65,7 +65,7 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 .sc.wd{background:#aecbed;color:#1b1b1f}.sc.sp{background:#f2d04d;color:#1b1b1f}.sc.sel{background:var(--rose);color:#fff}
 #sclear{margin-top:18px}
 #wclear{margin:6px 0 24px}
-.date{margin:16px 0 0;font:600 13px Georgia,"Times New Roman",serif;letter-spacing:2px;text-transform:uppercase;color:var(--rose)}
+.date{margin:16px 0 0;font:600 18px Georgia,"Times New Roman",serif;letter-spacing:2px;text-transform:uppercase;color:var(--rose)}
 #sgrid{position:relative}
 .sc{position:relative;z-index:1}
 #sgrid svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
@@ -178,79 +178,94 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
   font-size: 12px;
   letter-spacing: 2px;
 }
+/* Domino tray: visible, NYT-style pip tiles */
 #ptray {
-  width: min(94vw, 350px);
+  width: min(96vw, 380px);
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 7px;
+  gap: 8px;
 }
+
 .pdomino {
-  border: 1.5px solid var(--line);
-  border-radius: 8px;
-  padding: 5px 2px;
+  min-width: 0;
+  min-height: 86px;
+  padding: 7px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border: 2px solid var(--line);
+  border-radius: 9px;
   background: var(--card);
   color: var(--fg);
-  cursor: pointer;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-}
-.pdomino.active {
-  border: 2px solid var(--rose);
-  background: var(--key);
-}
-.pdomino.used {
-  opacity: .3;
-  cursor: default;
-}
-.phalf {
-  width: 22px;
-  height: 27px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 15px;
-  font-weight: 800;
-}
-.pips-note {
-  max-width: 340px;
-  margin: 16px 8px 0;
-  text-align: center;
-  color: var(--sub);
-  font-size: 13px;
-  line-height: 1.6;
-}
-
-
-/* Domino tray: pip-based tiles */
-.pdomino {
-  min-height: 58px;
+  cursor: grab;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
 }
+
+.pdomino:active {
+  cursor: grabbing;
+}
+
+.pdomino.active {
+  border-color: var(--rose);
+  background: var(--key);
+  box-shadow: 0 0 0 2px var(--rose);
+}
+
+.pdomino.used {
+  opacity: 0.25;
+}
+
+.phalf {
+  width: 30px;
+  height: 54px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .pdomino .pdots {
-  grid-template-columns: repeat(3, 4px);
-  grid-template-rows: repeat(3, 4px);
+  display: grid;
+  grid-template-columns: repeat(3, 7px);
+  grid-template-rows: repeat(3, 7px);
   gap: 3px;
+  align-content: center;
+  justify-content: center;
 }
+
 .pdomino .pdot {
-  width: 4px;
-  height: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fg);
 }
+
+.pdomino .pdot.off {
+  visibility: hidden;
+}
+
 .pdomino.vertical {
   flex-direction: column;
-  min-height: 72px;
+  min-height: 100px;
 }
+
 .pdomino.vertical .phalf {
-  width: 28px;
-  height: 22px;
+  width: 48px;
+  height: 34px;
 }
-.pdomino .phalf {
-  width: 30px;
-  height: 25px;
+
+.pdomino.vertical .pdots {
+  grid-template-columns: repeat(3, 6px);
+  grid-template-rows: repeat(3, 6px);
+  gap: 2px;
+}
+
+.pdomino.vertical .pdot {
+  width: 6px;
+  height: 6px;
 }
 .pcell {
   touch-action: manipulation;
@@ -260,6 +275,54 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 }
 #pboard {
   touch-action: manipulation;
+}
+#pboard {
+  gap: 7px;
+}
+
+.prow {
+  gap: 7px;
+}
+
+.pcell {
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  overflow: visible;
+}
+
+/* Make row clues prominent */
+.pcell .pclue {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  z-index: 2;
+  min-width: 19px;
+  height: 19px;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: var(--rose);
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Highlight cells containing placed domino halves */
+.pcell.placed {
+  border: 2px solid var(--rose);
+  background: #fbdccf;
+}
+
+:root[data-theme="dark"] .pcell.placed {
+  background: #58352c;
+}
+
+.pcell.selected {
+  outline: 3px solid var(--rose);
+  outline-offset: -3px;
 }
 </style>
 </head>
