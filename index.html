@@ -69,6 +69,159 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 #sgrid{position:relative}
 .sc{position:relative;z-index:1}
 #sgrid svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+  
+/* KC Times — Pips */
+#pips {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px 36px;
+}
+.pips-intro {
+  color: var(--rose);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin: 22px 0 4px;
+  text-align: center;
+}
+#pmsg {
+  min-height: 44px;
+  max-width: 360px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--sub);
+  margin: 8px 0 18px;
+}
+#pboard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: min(94vw, 350px);
+}
+.prow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+}
+.pcell {
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1.5px solid var(--line);
+  border-radius: 7px;
+  background: var(--card);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--fg);
+  cursor: pointer;
+}
+.pcell.empty-shape {
+  visibility: hidden;
+  pointer-events: none;
+}
+.pcell.selected {
+  outline: 3px solid var(--rose);
+  outline-offset: -3px;
+}
+.pcell .pclue {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  font-size: 9px;
+  color: var(--sub);
+  font-weight: 800;
+}
+.pcell .pdots {
+  display: grid;
+  grid-template-columns: repeat(3, 5px);
+  grid-template-rows: repeat(3, 5px);
+  gap: 2px;
+  align-content: center;
+  justify-content: center;
+}
+.pdot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+.pdot.off { visibility: hidden; }
+.pcell.placed { background: #fbdccf; }
+:root[data-theme="dark"] .pcell.placed { background: #58352c; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pcell.placed {
+    background: #58352c;
+  }
+}
+.pips-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  justify-content: center;
+  max-width: 370px;
+}
+.pips-tools .btn {
+  margin-top: 10px;
+  padding: 9px 13px;
+  font-size: 13px;
+}
+.pips-label {
+  align-self: center;
+  margin: 25px 0 10px;
+  color: var(--rose);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+#ptray {
+  width: min(94vw, 350px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+.pdomino {
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 2px;
+  background: var(--card);
+  color: var(--fg);
+  cursor: pointer;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.pdomino.active {
+  border: 2px solid var(--rose);
+  background: var(--key);
+}
+.pdomino.used {
+  opacity: .3;
+  cursor: default;
+}
+.phalf {
+  width: 22px;
+  height: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+}
+.pips-note {
+  max-width: 340px;
+  margin: 16px 8px 0;
+  text-align: center;
+  color: var(--sub);
+  font-size: 13px;
+  line-height: 1.6;
+}
 </style>
 </head>
 <body>
@@ -94,7 +247,7 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 </section>
 <section class="card">
 <div class="art p" aria-hidden="true"><svg width="120" height="64" viewBox="0 0 120 64"><rect x="2" y="2" width="116" height="60" rx="10" fill="#fff" stroke="#b8325a" stroke-width="3"/><line x1="60" y1="8" x2="60" y2="56" stroke="#b8325a" stroke-width="3"/><g fill="#b8325a"><circle cx="30" cy="32" r="6"/><circle cx="82" cy="20" r="6"/><circle cx="82" cy="44" r="6"/><circle cx="98" cy="20" r="6"/><circle cx="98" cy="44" r="6"/></g></svg></div>
-<div class="body"><h2>Pips</h2><p>Place every domino where it fits.</p><button class="btn" type="button" disabled>Coming soon</button></div>
+<div class="body"><h2>Pips</h2><p>Place every domino where it fits.</p><button class="btn" id="goPips" type="button">Play</button></div>
 </section>
 <section class="card">
 <div class="art x" aria-hidden="true"><svg width="100" height="100" viewBox="0 0 100 100"><g stroke="#2b1520" stroke-width="2"><rect x="2" y="2" width="96" height="96" fill="#fff"/><rect x="2" y="2" width="24" height="24" fill="#2b1520"/><rect x="74" y="2" width="24" height="24" fill="#2b1520"/><rect x="38" y="38" width="24" height="24" fill="#2b1520"/><rect x="2" y="74" width="24" height="24" fill="#2b1520"/><rect x="74" y="74" width="24" height="24" fill="#2b1520"/></g></svg></div>
@@ -112,6 +265,29 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 <button class="btn" id="wclear" type="button">Clear</button>
 </div>
 
+<div id="pips" hidden>
+  <div class="gh">
+    <button class="back" id="pback" type="button">&#8592; Games</button>
+    <h2>Pips</h2>
+    <span></span>
+  </div>
+  <p class="pips-intro">THE ANNIVERSARY CHALLENGE · HARD</p>
+  <p id="pmsg" role="status" aria-live="polite">
+    Select a domino, then tap two connected empty cells.
+  </p>
+  <div id="pboard" aria-label="Number five domino puzzle"></div>
+  <div class="pips-tools">
+    <button class="btn" id="protate" type="button">Rotate domino</button>
+    <button class="btn" id="pcheck" type="button">Check puzzle</button>
+    <button class="btn" id="pclear" type="button">Reset</button>
+  </div>
+  <h3 class="pips-label">YOUR DOMINOES</h3>
+  <div id="ptray"></div>
+  <p class="pips-note">
+    Each row has a target sum. Match the pips in every row
+    and use every domino exactly once.
+  </p>
+</div>
 <div id="strands" hidden>
 <div class="gh"><button class="back" id="sback" type="button">&#8592; Games</button><h2>Strands</h2><span></span></div>
 <div class="theme">Theme: our adventures</div>
@@ -206,6 +382,308 @@ ALL.forEach(function(x){x.done=false;x.col=null});
 found=[];cellColor={};nFound=0;ci=0;cur=[];save();sm.textContent=status(false);paint()});
 try{JSON.parse(localStorage.getItem(SAVE)||"[]").forEach(function(w){var x=ALL.filter(function(a){return a.w===w})[0];if(x&&!x.done)mark(x)})}catch(e){}
 sm.textContent=status(false);paint();
+})();
+</script>
+<script>
+(function () {
+  var hub = document.getElementById("hub");
+  var game = document.getElementById("pips");
+  var board = document.getElementById("pboard");
+  var tray = document.getElementById("ptray");
+  var msg = document.getElementById("pmsg");
+
+  // The five-shaped board has 20 cells and 10 dominoes.
+  var shape = [
+    [1,1,1,1,1],
+    [1,1,1,0,0],
+    [1,1,1,1,1],
+    [0,0,0,1,1],
+    [1,1,1,1,1]
+  ];
+
+  var targets = [10, 8, 12, 7, 13];
+  var original = [
+    [0,1],[0,3],[2,3],[1,6],[0,4],
+    [2,4],[3,5],[0,2],[3,6],[2,3]
+  ];
+
+  var pieces, cells, selected, first, flipped, won;
+
+  function say(text) {
+    msg.textContent = text;
+  }
+
+  function dots(n) {
+    var patterns = [
+      [0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,1,0,0,0,0],
+      [1,0,0,0,0,0,0,0,1],
+      [1,0,0,0,1,0,0,0,1],
+      [1,0,1,0,0,0,1,0,1],
+      [1,0,1,0,1,0,1,0,1],
+      [1,0,1,1,0,1,1,0,1]
+    ];
+    var el = document.createElement("span");
+    el.className = "pdots";
+    patterns[n].forEach(function (on) {
+      var d = document.createElement("i");
+      d.className = "pdot" + (on ? "" : " off");
+      el.appendChild(d);
+    });
+    return el;
+  }
+
+  function makeCell(r, c) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "pcell";
+    b.setAttribute("aria-label", "Row " + (r+1) +
+      ", column " + (c+1));
+    b.dataset.r = r;
+    b.dataset.c = c;
+    b.addEventListener("click", function () {
+      tapCell(r, c);
+    });
+    return b;
+  }
+
+  function init() {
+    pieces = original.map(function (v, i) {
+      return { id:i, a:v[0], b:v[1], used:false, cells:[] };
+    });
+    cells = [];
+    selected = null;
+    first = null;
+    flipped = false;
+    won = false;
+    board.innerHTML = "";
+    tray.innerHTML = "";
+
+    for (var r = 0; r < 5; r++) {
+      var row = document.createElement("div");
+      row.className = "prow";
+      cells[r] = [];
+
+      for (var c = 0; c < 5; c++) {
+        if (!shape[r][c]) {
+          var blank = document.createElement("div");
+          blank.className = "pcell empty-shape";
+          row.appendChild(blank);
+          cells[r][c] = null;
+          continue;
+        }
+
+        var cell = makeCell(r, c);
+        cells[r][c] = {
+          el:cell, r:r, c:c, value:null, piece:null
+        };
+        if (c === 0 || !shape[r][c-1]) {
+          var clue = document.createElement("span");
+          clue.className = "pclue";
+          clue.textContent = targets[r];
+          cell.appendChild(clue);
+        }
+        row.appendChild(cell);
+      }
+      board.appendChild(row);
+    }
+
+    pieces.forEach(function (p) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "pdomino";
+      b.innerHTML =
+        '<span class="phalf">' + p.a + '</span>' +
+        '<span style="opacity:.35">|</span>' +
+        '<span class="phalf">' + p.b + '</span>';
+      b.setAttribute("aria-label",
+        "Domino " + p.a + " and " + p.b);
+      b.addEventListener("click", function () {
+        if (p.used || won) return;
+        selected = p;
+        first = null;
+        flipped = false;
+        render();
+        say("Domino selected. Tap its first cell on the five.");
+      });
+      p.el = b;
+      tray.appendChild(b);
+    });
+
+    render();
+    say("Hard mode: fit all 10 dominoes and match the row sums.");
+  }
+
+  function render() {
+    pieces.forEach(function (p) {
+      p.el.classList.toggle("active", p === selected);
+      p.el.classList.toggle("used", p.used);
+    });
+
+    for (var r = 0; r < 5; r++) {
+      for (var c = 0; c < 5; c++) {
+        var cell = cells[r][c];
+        if (!cell) continue;
+
+        var el = cell.el;
+        el.classList.toggle("selected",
+          !!first && first.r === r && first.c === c);
+        el.classList.toggle("placed", cell.value !== null);
+
+        // Keep the row target visible.
+        el.innerHTML = "";
+        if (c === 0 || !shape[r][c-1]) {
+          var clue = document.createElement("span");
+          clue.className = "pclue";
+          clue.textContent = targets[r];
+          el.appendChild(clue);
+        }
+        if (cell.value !== null) {
+          el.appendChild(dots(cell.value));
+        }
+        el.setAttribute("aria-label",
+          "Row " + (r+1) + ", column " + (c+1) +
+          (cell.value === null ? ", empty" : ", " + cell.value + " pips"));
+      }
+    }
+  }
+
+  function adjacent(a, b) {
+    return Math.abs(a.r-b.r) + Math.abs(a.c-b.c) === 1;
+  }
+
+  function tapCell(r, c) {
+    if (won) return;
+
+    var cell = cells[r][c];
+    if (!cell) return;
+
+    if (cell.value !== null) {
+      // Tapping either half removes the entire domino.
+      var old = cell.piece;
+      old.cells.forEach(function (pos) {
+        var x = cells[pos.r][pos.c];
+        x.value = null;
+        x.piece = null;
+      });
+      old.cells = [];
+      old.used = false;
+      selected = old;
+      first = null;
+      render();
+      say("Domino returned to the tray. Place it again.");
+      return;
+    }
+
+    if (!selected) {
+      say("Choose an unused domino from the tray first.");
+      return;
+    }
+
+    if (!first) {
+      first = cell;
+      render();
+      say("Now tap an empty cell directly above, below, left or right.");
+      return;
+    }
+
+    if (first === cell) {
+      first = null;
+      render();
+      say("First cell cleared. Choose another starting cell.");
+      return;
+    }
+
+    if (!adjacent(first, cell)) {
+      first = cell;
+      render();
+      say("Those cells don't touch. Choose an adjacent second cell.");
+      return;
+    }
+
+    var a = flipped ? selected.b : selected.a;
+    var b = flipped ? selected.a : selected.b;
+
+    first.value = a;
+    first.piece = selected;
+    cell.value = b;
+    cell.piece = selected;
+
+    selected.cells = [
+      {r:first.r, c:first.c},
+      {r:cell.r, c:cell.c}
+    ];
+    selected.used = true;
+    selected = null;
+    first = null;
+    flipped = false;
+
+    render();
+    say("Domino placed. Keep going, or check your row sums.");
+  }
+
+  document.getElementById("goPips").addEventListener("click", function () {
+    hub.hidden = true;
+    game.hidden = false;
+    window.scrollTo(0, 0);
+  });
+
+  document.getElementById("pback").addEventListener("click", function () {
+    game.hidden = true;
+    hub.hidden = false;
+    window.scrollTo(0, 0);
+  });
+
+  document.getElementById("protate").addEventListener("click", function () {
+    if (!selected) {
+      say("Select a domino first.");
+      return;
+    }
+    flipped = !flipped;
+    var a = selected.a, b = selected.b;
+    selected.el.innerHTML =
+      '<span class="phalf">' + (flipped ? b : a) + '</span>' +
+      '<span style="opacity:.35">|</span>' +
+      '<span class="phalf">' + (flipped ? a : b) + '</span>';
+    say("Domino flipped. Its first and second values are swapped.");
+  });
+
+  document.getElementById("pcheck").addEventListener("click", function () {
+    var total = 0, filled = 0, correct = true;
+
+    for (var r = 0; r < 5; r++) {
+      var sum = 0, count = 0;
+      for (var c = 0; c < 5; c++) {
+        var cell = cells[r][c];
+        if (!cell) continue;
+        if (cell.value !== null) {
+          sum += cell.value;
+          count++;
+          filled++;
+        }
+      }
+      total += sum;
+      if (count !== [5,3,5,2,5][r] || sum !== targets[r]) {
+        correct = false;
+      }
+    }
+
+    if (filled !== 20 || pieces.some(function (p) { return !p.used; })) {
+      say("Not finished yet. Fill all 20 cells using all 10 dominoes.");
+      return;
+    }
+
+    if (correct && total === 50) {
+      won = true;
+      say("You solved it! Five years, five stars, one perfect match. ♥");
+    } else {
+      say("Not quite! Check the row targets and reposition your dominoes.");
+    }
+  });
+
+  document.getElementById("pclear").addEventListener("click", init);
+
+  init();
 })();
 </script>
 </body>
