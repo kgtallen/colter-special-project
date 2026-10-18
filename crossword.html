@@ -9,11 +9,15 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c0f15;--fg:#f8e9ec;--sub:#c9a3ae;--card:#2a1721;--line:#5a3645;--rose:#ef7b9b;--hl:#4a2635;--sel:#7d3350;--bad:#ff8a8f}}
 :root[data-theme="dark"]{--bg:#1c0f15;--fg:#f8e9ec;--sub:#c9a3ae;--card:#2a1721;--line:#5a3645;--rose:#ef7b9b;--hl:#4a2635;--sel:#7d3350;--bad:#ff8a8f}
 @media (min-width:900px){:root{--cs:40px}}
+:root{--star:#f7e7a6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--star:#5b4a1a}}
+:root[data-theme="dark"]{--star:#5b4a1a}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:"Helvetica Neue",Arial,sans-serif;display:flex;flex-direction:column;align-items:center;touch-action:manipulation}
 header{width:100%;max-width:1100px;display:grid;grid-template-columns:90px 1fr 90px;align-items:center;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
 header a{justify-self:start;color:var(--rose);font:600 15px "Helvetica Neue",Arial,sans-serif;text-decoration:none;padding:8px 4px}
+#timer{justify-self:end;padding-right:4px;color:var(--sub);font:600 15px "Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
 h1{margin:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:26px}
 #main{width:100%;display:flex;flex-direction:column;align-items:center}
 #play{display:flex;flex-direction:column;align-items:center;width:100%}
@@ -24,6 +28,7 @@ h1{margin:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-s
 #grid{display:grid;grid-template-columns:repeat(15,var(--cs));border:2px solid var(--fg);background:var(--fg);gap:1px;user-select:none;-webkit-user-select:none}
 .cell{position:relative;width:var(--cs);height:var(--cs);background:var(--card);cursor:pointer}
 .cell.blk{background:var(--fg);cursor:default}
+.cell.star{background:var(--star)}
 .cell.hl{background:var(--hl)}
 .cell.sel{background:var(--sel)}
 .n{position:absolute;left:2px;top:1px;font-size:calc(var(--cs)*.28);line-height:1;color:var(--sub)}
@@ -39,6 +44,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--rose);outline-offse
 .scroll{position:relative}
 .ci{display:flex;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:7px 6px;color:var(--fg);font:14px/1.35 "Helvetica Neue",Arial,sans-serif;cursor:pointer}
 .ci b{flex:none;min-width:24px;color:var(--rose);text-align:right}
+.ci.star{background:var(--star)}
 .ci.cross{background:var(--hl)}
 .ci.on{background:var(--sel)}
 .ci.done{color:var(--sub);opacity:.6}
@@ -53,7 +59,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--rose);outline-offse
 </style>
 </head>
 <body>
-<header><a href="index.html">&#8592; Games</a><h1>The Crossword</h1><span></span></header>
+<header><a href="index.html">&#8592; Games</a><h1>The Crossword</h1><span id="timer" aria-label="Elapsed time">0:00</span></header>
 <div id="main">
 <section id="play">
 <div id="bar"><button id="prev" type="button" aria-label="Previous clue">&#8249;</button><div id="clue"></div><button id="next" type="button" aria-label="Next clue">&#8250;</button></div>
@@ -69,6 +75,17 @@ var ROWS=["ADS#TAPA###ANAL", "PEE#AGEISM#VINO", "PAM#KETTLE#ANAL", "#FIVESTARHOT
 var CL={"A": {"1": "Show stoppers?", "4": "Small bite abroad", "8": "Annoyingly fastidious", "12": "Capital of Peru?", "13": "Senioritis?", "16": "Kyla's favorite alcoholic drink, in Italy", "17": "\"The Office\" role played by Jenna Fischer", "18": "What the pot calls black", "19": "Oops, I did it again (with 8 across and 10 down)", "20": "*Best of the best vacation accommodations", "22": "Elfin folk", "23": "Boobie", "24": "18-wheeler", "28": "Kyla's favorite vegetable to eat in its raw form", "31": "Kyla's go to state when overwhelmed", "34": "btw", "35": "Silly ______", "36": "Lululemon rival", "37": "Word with poker or chocolate", "39": "Pretty meh", "40": "How every square of this puzzle was filled", "42": "What winding ski course goes downhill around obstacles?", "46": "Trojan War sea", "47": "___ a dozen", "48": "Spanish indefinite article", "49": "*Food-dropped-on-the-floor \"policy\"", "55": "Vile, whatever way you look at it!", "56": "'L'chaim,' translated", "57": "Good Hang podcaster, familiarly", "59": "Tuesday food, perhaps", "60": "Position, rank", "61": "Woman who'll take you to court?", "62": "Start ___ (go back to square one)", "63": "Evaluated by hand", "64": "Identification digits: abbr."}, "D": {"1": "Starter dish, informally", "2": "Sign users, say", "3": "Prefix for sweet or final", "4": "*Pause for a breather", "5": "Way back when", "6": "Frivolously spiteful", "7": "Subreddit for morality judgement", "8": "James Cameron hit", "9": "*1981 film whose theme song became one of Dolly Parton's biggest hits", "10": "Butt-related", "11": "Giggles, hehe", "14": "High-end camera initials", "15": "Common Indian surname", "21": "\"Over\" for a poet", "25": "How some tuna is preserved", "26": "Words to the wise, something Kyla gives often", "27": "Some E.R. workers", "28": "Blood vessel blocker", "29": "What Kyla's personality may be", "30": "Bro's sib, perhaps", "32": "Sounds from a cornfield", "33": "Former champion boxer", "35": "Sports teams execs", "37": "Easiest to understand", "38": "Take all of, as bedsheets", "41": "Quantity hinted at by the number in each starred answer", "43": "Keep one's head down", "44": "Yoga mantras", "45": "Gets introduced", "48": "Become a single whole", "49": "Ingredient in a Greek salad", "50": "Russia's __ the Terrible", "51": "Humble bed", "52": "Frozen character", "53": "\"Bonny\" one", "54": "Tall Australian birds", "58": "Dough in Tokyo"}};
 var N=15,SAVE="ourgames-crossword",WIN="You solved it! Happy 5th anniversary \u2665",SENT="~";
 var touch=!!(window.matchMedia&&matchMedia("(pointer: coarse)").matches);
+var TSAVE="ourgames-crossword-time",elapsed=0,startAt=null,solved=false,timerEl=document.getElementById("timer");
+try{elapsed=parseInt(localStorage.getItem(TSAVE),10)||0}catch(e){}
+function fmt(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+":"+(m<10?"0":"")+m:m)+":"+(x<10?"0":"")+x}
+function nowT(){return elapsed+(startAt?Date.now()-startAt:0)}
+function saveT(){try{localStorage.setItem(TSAVE,String(Math.floor(nowT())))}catch(e){}}
+function tick(){timerEl.textContent=fmt(nowT())}
+function startT(){if(startAt||solved||document.hidden)return;startAt=Date.now()}
+function pauseT(){if(startAt){elapsed+=Date.now()-startAt;startAt=null}saveT();tick()}
+setInterval(function(){if(startAt)saveT();tick()},1000);
+document.addEventListener("visibilitychange",function(){if(document.hidden)pauseT();else if(elapsed>0)startT()});
+window.addEventListener("pagehide",pauseT);
 function isB(r,c){return r<0||c<0||r>=N||c>=N||ROWS[r].charAt(c)==="#"}
 var num={},starts={A:{},D:{}},n=0,r,c;
 for(r=0;r<N;r++)for(c=0;c<N;c++){if(isB(r,c))continue;var sa=isB(r,c-1)&&!isB(r,c+1),sd=isB(r-1,c)&&!isB(r+1,c);
@@ -76,6 +93,8 @@ if(sa||sd){n++;num[r+","+c]=n;if(sa)starts.A[n]=[r,c];if(sd)starts.D[n]=[r,c]}}
 function wordAt(r,c,d){var dr=d==="D"?1:0,dc=d==="A"?1:0;while(!isB(r-dr,c-dc)){r-=dr;c-=dc}var w=[];while(!isB(r,c)){w.push([r,c]);r+=dr;c+=dc}return w}
 var entries=[];
 ["A","D"].forEach(function(d){Object.keys(starts[d]).map(Number).sort(function(a,b){return a-b}).forEach(function(k){entries.push({d:d,n:k,at:starts[d][k],w:wordAt(starts[d][k][0],starts[d][k][1],d)})})});
+var starCells={};
+entries.forEach(function(x){var t=CL[x.d][x.n];x.star=t.charAt(0)==="*";x.rev=/starred/i.test(t);if(x.star)x.w.forEach(function(p){starCells[p[0]+","+p[1]]=1})});
 var fill=[],bad={},cells=[];
 for(r=0;r<N;r++){fill[r]=[];cells[r]=[];for(c=0;c<N;c++)fill[r][c]=""}
 var grid=document.getElementById("grid"),clueEl=document.getElementById("clue"),msg=document.getElementById("msg");
@@ -86,21 +105,22 @@ var sel=starts.A[1].slice(),dir="A",inp=null;
 function curWord(){return wordAt(sel[0],sel[1],dir)}
 function numOf(w){return num[w[0][0]+","+w[0][1]]}
 function reveal(el){var box=el.parentNode,top=el.offsetTop,bot=top+el.offsetHeight;if(top<box.scrollTop)box.scrollTop=top-4;else if(bot>box.scrollTop+box.clientHeight)box.scrollTop=bot-box.clientHeight+4}
-function render(){var w=curWord(),hl={};w.forEach(function(p){hl[p[0]+","+p[1]]=1});
-for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c))continue;var e=cells[r][c];e.className="cell"+(hl[r+","+c]?" hl":"")+(r===sel[0]&&c===sel[1]?" sel":"")+(bad[r+","+c]?" bad":"");e.lastChild.textContent=fill[r][c]}
+function render(){var w=curWord(),hl={};var cw=entries.filter(function(x){return x.d===dir&&x.n===numOf(w)})[0],isRev=!!(cw&&cw.rev);w.forEach(function(p){hl[p[0]+","+p[1]]=1});
+for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c))continue;var e=cells[r][c];e.className="cell"+(isRev&&starCells[r+","+c]?" star":"")+(hl[r+","+c]?" hl":"")+(r===sel[0]&&c===sel[1]?" sel":"")+(bad[r+","+c]?" bad":"");e.lastChild.textContent=fill[r][c]}
 var k=numOf(w),od=dir==="A"?"D":"A",ow=wordAt(sel[0],sel[1],od),ok=ow.length>1?numOf(ow):-1;
 clueEl.innerHTML="";var b=document.createElement("b");b.textContent=k+dir;clueEl.appendChild(b);clueEl.appendChild(document.createTextNode(CL[dir][k]));
-entries.forEach(function(x){var on=x.d===dir&&x.n===k,cr=x.d===od&&x.n===ok;x.el.classList.toggle("on",on);x.el.classList.toggle("cross",cr);
+entries.forEach(function(x){var on=x.d===dir&&x.n===k,cr=x.d===od&&x.n===ok;x.el.classList.toggle("on",on);x.el.classList.toggle("cross",cr);x.el.classList.toggle("star",isRev&&x.star);
 x.el.classList.toggle("done",x.w.every(function(p){return !!fill[p[0]][p[1]]}));if(on||cr)reveal(x.el)})}
 function persist(){try{localStorage.setItem(SAVE,fill.map(function(row){return row.map(function(x){return x||"."}).join("")}).join("|"))}catch(e){}}
 function status(){var all=true,ok=true;for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c))continue;if(!fill[r][c])all=false;else if(fill[r][c]!==ROWS[r].charAt(c))ok=false}
-msg.textContent=all&&ok?WIN:(all?"Every square is filled, but something\u2019s off. Try Check.":"")}
+var win=all&&ok;if(win){if(!solved){solved=true;pauseT()}}else solved=false;
+msg.textContent=win?WIN+" Time: "+fmt(nowT()):(all?"Every square is filled, but something\u2019s off. Try Check.":"")}
 function focusIn(){if(inp){try{inp.focus({preventScroll:true})}catch(e){inp.focus()}}}
 var picked=false;
 function pick(r,c){if(isB(r,c))return;if(picked&&r===sel[0]&&c===sel[1]){var o=dir==="A"?"D":"A";if(wordAt(r,c,o).length>1)dir=o}else{sel=[r,c];if(wordAt(r,c,dir).length<2)dir=dir==="A"?"D":"A"}picked=true;render();focusIn()}
 function go(i){var en=entries[(i+entries.length)%entries.length];sel=en.at.slice();dir=en.d;render();focusIn()}
 function idx(){var k=numOf(curWord());for(var i=0;i<entries.length;i++)if(entries[i].d===dir&&entries[i].n===k)return i;return 0}
-function put(ch){var w=curWord(),i=0;fill[sel[0]][sel[1]]=ch;delete bad[sel[0]+","+sel[1]];for(;i<w.length;i++)if(w[i][0]===sel[0]&&w[i][1]===sel[1])break;if(i<w.length-1)sel=w[i+1];persist();render();status()}
+function put(ch){startT();var w=curWord(),i=0;fill[sel[0]][sel[1]]=ch;delete bad[sel[0]+","+sel[1]];for(;i<w.length;i++)if(w[i][0]===sel[0]&&w[i][1]===sel[1])break;if(i<w.length-1)sel=w[i+1];persist();render();status()}
 function back(){var w=curWord(),i=0;for(;i<w.length;i++)if(w[i][0]===sel[0]&&w[i][1]===sel[1])break;
 if(!fill[sel[0]][sel[1]]&&i>0){sel=w[i-1]}fill[sel[0]][sel[1]]="";delete bad[sel[0]+","+sel[1]];persist();render();status()}
 function move(dr,dc){var r=sel[0]+dr,c=sel[1]+dc;while(r>=0&&c>=0&&r<N&&c<N&&isB(r,c)){r+=dr;c+=dc}if(r>=0&&c>=0&&r<N&&c<N){sel=[r,c];if(wordAt(r,c,dir).length<2)dir=dir==="A"?"D":"A";render()}}
@@ -119,11 +139,11 @@ else if(k==="Tab"||k==="Enter"){go(idx()+(e.shiftKey?-1:1));e.preventDefault()}
 else if(k===" "){var o=dir==="A"?"D":"A";if(wordAt(sel[0],sel[1],o).length>1){dir=o;render()}e.preventDefault()}})}
 document.getElementById("check").addEventListener("click",function(){var wrong=0;bad={};for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c)||!fill[r][c])continue;if(fill[r][c]!==ROWS[r].charAt(c)){bad[r+","+c]=1;wrong++}}
 render();status();if(!msg.textContent)msg.textContent=wrong?wrong+(wrong===1?" square needs":" squares need")+" another look.":"No mistakes so far!"});
-document.getElementById("clear").addEventListener("click",function(){if(!confirm("Clear the whole crossword?"))return;for(var r=0;r<N;r++)for(var c=0;c<N;c++)fill[r][c]="";bad={};msg.textContent="";persist();render()});
+document.getElementById("clear").addEventListener("click",function(){if(!confirm("Clear the whole crossword?"))return;for(var r=0;r<N;r++)for(var c=0;c<N;c++)fill[r][c]="";bad={};msg.textContent="";elapsed=0;startAt=null;solved=false;saveT();tick();persist();render()});
 entries.forEach(function(en){var box=document.getElementById(en.d==="A"?"la":"ld"),b=document.createElement("button");b.type="button";b.className="ci";var bb=document.createElement("b");bb.textContent=en.n;b.appendChild(bb);b.appendChild(document.createTextNode(CL[en.d][en.n]));
 b.addEventListener("click",function(){sel=en.at.slice();dir=en.d;render();focusIn();if(window.innerWidth<900)window.scrollTo(0,0)});box.appendChild(b);en.el=b});
 try{var sv=localStorage.getItem(SAVE);if(sv){sv.split("|").forEach(function(row,r){row.split("").forEach(function(ch,c){if(ch!=="."&&r<N&&c<N&&!isB(r,c))fill[r][c]=ch})})}}catch(e){}
-render();status();
+render();status();tick();if(elapsed>0&&!solved)startT();
 })();
 </script>
 </body>
