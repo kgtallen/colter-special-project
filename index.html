@@ -222,6 +222,45 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
   font-size: 13px;
   line-height: 1.6;
 }
+
+
+/* Domino tray: pip-based tiles */
+.pdomino {
+  min-height: 58px;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.pdomino .pdots {
+  grid-template-columns: repeat(3, 4px);
+  grid-template-rows: repeat(3, 4px);
+  gap: 3px;
+}
+.pdomino .pdot {
+  width: 4px;
+  height: 4px;
+}
+.pdomino.vertical {
+  flex-direction: column;
+  min-height: 72px;
+}
+.pdomino.vertical .phalf {
+  width: 28px;
+  height: 22px;
+}
+.pdomino .phalf {
+  width: 30px;
+  height: 25px;
+}
+.pcell {
+  touch-action: manipulation;
+}
+.pcell.placed {
+  border-color: var(--rose);
+}
+#pboard {
+  touch-action: manipulation;
+}
 </style>
 </head>
 <body>
@@ -408,6 +447,8 @@ sm.textContent=status(false);paint();
   ];
 
   var pieces, cells, selected, first, flipped, won;
+  var dragging = null;
+  var vertical = false;
 
   function say(text) {
     msg.textContent = text;
@@ -448,6 +489,8 @@ sm.textContent=status(false);paint();
   }
 
   function init() {
+    dragging = null;
+    vertical = false;
     pieces = original.map(function (v, i) {
       return { id:i, a:v[0], b:v[1], used:false, cells:[] };
     });
@@ -488,38 +531,55 @@ sm.textContent=status(false);paint();
       board.appendChild(row);
     }
 
-    pieces.forEach(function (p) {
-      var b = document.createElement("button");
-      b.type = "button";
-      b.className = "pdomino";
-      b.innerHTML =
-        '<span class="phalf">' + p.a + '</span>' +
-        '<span style="opacity:.35">|</span>' +
-        '<span class="phalf">' + p.b + '</span>';
-      b.setAttribute("aria-label",
-        "Domino " + p.a + " and " + p.b);
-      b.addEventListener("click", function () {
-        if (p.used || won) return;
-        selected = p;
-        first = null;
-        flipped = false;
-        render();
-        say("Domino selected. Tap its first cell on the five.");
-      });
-      p.el = b;
-      tray.appendChild(b);
-    });
+  pieces.forEach(function (p) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "pdomino";
+  b.setAttribute("aria-label",
+    "Domino with " + p.a + " and " + p.b + " pips");
 
+  b.appendChild(makeHalf(p.a));
+  var divider = document.createElement("span");
+  divider.textContent = "";
+  divider.style.cssText =
+    "width:1px;height:25px;background:var(--line);flex-shrink:0";
+  b.appendChild(divider);
+  b.appendChild(makeHalf(p.b));
+
+  b.addEventListener("click", function () {
+    if (p.used || won) return;
+    selected = p;
+    first = null;
     render();
-    say("Hard mode: fit all 10 dominoes and match the row sums.");
-  }
+    say("Drag this domino onto the board, or tap two adjacent cells.");
+  });
+
+  // Begin dragging a domino with a mouse or finger.
+  b.addEventListener("pointerdown", function () {
+    if (p.used || won) return;
+    selected = p;
+    first = null;
+    render();
+    dragging = p;
+  });
+
+  p.el = b;
+  tray.appendChild(b);
+});
+
+function makeHalf(n) {
+  var half = document.createElement("span");
+  half.className = "phalf";
+  half.appendChild(dots(n));
+  return half;
+}
 
   function render() {
     pieces.forEach(function (p) {
       p.el.classList.toggle("active", p === selected);
       p.el.classList.toggle("used", p.used);
-    });
-
+      p.el.classList.toggle("vertical", p === selected && vertical);
+});
     for (var r = 0; r < 5; r++) {
       for (var c = 0; c < 5; c++) {
         var cell = cells[r][c];
@@ -633,21 +693,54 @@ sm.textContent=status(false);paint();
     hub.hidden = false;
     window.scrollTo(0, 0);
   });
-
   document.getElementById("protate").addEventListener("click", function () {
-    if (!selected) {
-      say("Select a domino first.");
-      return;
-    }
-    flipped = !flipped;
-    var a = selected.a, b = selected.b;
-    selected.el.innerHTML =
-      '<span class="phalf">' + (flipped ? b : a) + '</span>' +
-      '<span style="opacity:.35">|</span>' +
-      '<span class="phalf">' + (flipped ? a : b) + '</span>';
-    say("Domino flipped. Its first and second values are swapped.");
-  });
+  if (!selected) {
+    say("Select a domino from the tray first.");
+    return;
+  }
 
+  vertical = !vertical;
+  selected.el.classList.toggle("vertical", vertical);
+
+  say(vertical
+    ? "Vertical placement selected. Drag onto the board."
+    : "Horizontal placement selected. Drag onto the board.");
+});
+  document.addEventListener("pointerup", function (e) {
+  if (!dragging) return;
+
+  var p = dragging;
+  dragging = null;
+
+  if (p.used || won || selected !== p) return;
+
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el) return;
+
+  var target = el.closest("#pboard .pcell:not(.empty-shape)");
+  if (!target) return;
+
+  var r = Number(target.dataset.r);
+  var c = Number(target.dataset.c);
+
+  // Default drag placement goes right or down.
+  var r2 = r + (vertical ? 1 : 0);
+  var c2 = c + (vertical ? 0 : 1);
+
+  // Check that both halves fit inside the five.
+  if (r2 >= 5 || c2 >= 5 ||
+      !cells[r][c] || !cells[r2][c2] ||
+      cells[r][c].value !== null ||
+      cells[r2][c2].value !== null) {
+    say("That domino doesn't fit there. Try another cell or rotate it.");
+    return;
+  }
+
+  // Place both halves using the existing game logic.
+  tapCell(r, c);
+  tapCell(r2, c2);
+});
+    
   document.getElementById("pcheck").addEventListener("click", function () {
     var total = 0, filled = 0, correct = true;
 
