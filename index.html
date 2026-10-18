@@ -563,9 +563,11 @@ sm.textContent=status(false);paint();
     dragging = p;
   });
 
-  p.el = b;
+   p.el = b;
   tray.appendChild(b);
 });
+
+} // Close init() here
 
 function makeHalf(n) {
   var half = document.createElement("span");
@@ -737,9 +739,30 @@ function makeHalf(n) {
   }
 
   // Place both halves using the existing game logic.
-  tapCell(r, c);
-  tapCell(r2, c2);
-});
+  var a = flipped ? p.b : p.a;
+  var b = flipped ? p.a : p.b;
+  
+  var firstCell = cells[r][c];
+  var secondCell = cells[r2][c2];
+  
+  firstCell.value = a;
+  firstCell.piece = p;
+  secondCell.value = b;
+  secondCell.piece = p;
+  
+  p.cells = [
+    { r: r, c: c },
+    { r: r2, c: c2 }
+  ];
+  
+  p.used = true;
+  selected = null;
+  first = null;
+  flipped = false;
+  
+  render();
+  say("Domino placed. Keep going, or check your row sums.");
+  });
     
   document.getElementById("pcheck").addEventListener("click", function () {
     var total = 0, filled = 0, correct = true;
