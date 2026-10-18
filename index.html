@@ -65,11 +65,16 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 .sc.wd{background:#aecbed;color:#1b1b1f}.sc.sp{background:#f2d04d;color:#1b1b1f}.sc.sel{background:var(--rose);color:#fff}
 #sclear{margin-top:18px}
 #wclear{margin:6px 0 24px}
+.date{margin:16px 0 0;font:600 13px Georgia,"Times New Roman",serif;letter-spacing:2px;text-transform:uppercase;color:var(--rose)}
+#sgrid{position:relative}
+.sc{position:relative;z-index:1}
+#sgrid svg{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0}
 </style>
 </head>
 <body>
 <div id="hub">
 <div class="top">
+<p class="date">Friday, November 13, 2026</p>
 <h1>Our Games <span>&#9829;</span></h1>
 <p class="sub">Five puzzles, made just for you, for five years of us.</p>
 </div>
@@ -159,26 +164,36 @@ var SP={w:"ROADTRIPS",p:[[7,0],[6,0],[7,1],[6,2],[6,3],[7,2],[7,3],[7,4],[6,5]],
 var WD=[{w:"JOSHUATREE",p:[[7,5],[6,4],[5,5],[4,5],[5,4],[5,3],[4,3],[3,2],[3,1],[4,0]]},{w:"YOSEMITE",p:[[4,1],[5,0],[5,1],[6,1],[5,2],[4,2],[3,3],[2,4]]},{w:"MOAB",p:[[3,5],[2,5],[3,4],[4,4]]},{w:"OLYMPICS",p:[[2,1],[3,0],[2,0],[1,1],[1,2],[0,1],[1,0],[0,0]]},{w:"IDYLLWILD",p:[[0,4],[1,5],[0,5],[1,4],[0,3],[0,2],[1,3],[2,2],[2,3]]}];
 WD.forEach(function(x){x.t="wd"});
 var ALL=[SP].concat(WD),WIN="You found them all. Five years and counting!";
+var PAL=["#aecbed","#c8b6ea","#f6b8a8","#a9dcb9","#f4c3dc","#f3b27a"],YEL="#f2d04d",SAVE="ourgames-strands";
 var hub=document.getElementById("hub"),box=document.getElementById("strands"),sg=document.getElementById("sgrid"),sw=document.getElementById("sword"),sm=document.getElementById("smsg");
-document.getElementById("goStrands").addEventListener("click",function(){hub.hidden=true;box.hidden=false;window.scrollTo(0,0)});
-document.getElementById("sback").addEventListener("click",function(){box.hidden=true;hub.hidden=false;window.scrollTo(0,0)});
 var L=[],cells=[],r,c;
 for(r=0;r<8;r++){L[r]=[];cells[r]=[]}
 ALL.forEach(function(x){x.p.forEach(function(q,i){L[q[0]][q[1]]=x.w[i]})});
 for(r=0;r<8;r++)for(c=0;c<6;c++){var d=document.createElement("div");d.className="sc";d.textContent=L[r][c];d.dataset.r=r;d.dataset.c=c;sg.appendChild(d);cells[r][c]=d}
-var cur=[],state={},nFound=0,down=false,moved=false;
+var svg=document.createElementNS("http://www.w3.org/2000/svg","svg");sg.appendChild(svg);
+var cur=[],found=[],cellColor={},nFound=0,ci=0,down=false,moved=false;
 function key(p){return p[0]+","+p[1]}
 function adj(a,b){return Math.abs(a[0]-b[0])<=1&&Math.abs(a[1]-b[1])<=1&&key(a)!==key(b)}
 function idx(p){for(var i=0;i<cur.length;i++)if(key(cur[i])===key(p))return i;return -1}
-function paint(){for(var r=0;r<8;r++)for(var c=0;c<6;c++)cells[r][c].className="sc"+(state[r+","+c]?" "+state[r+","+c]:"");
+function pt(p){var e=cells[p[0]][p[1]];return (e.offsetLeft+e.offsetWidth/2)+","+(e.offsetTop+e.offsetHeight/2)}
+function line(path,col,w){return '<polyline points="'+path.map(pt).join(" ")+'" fill="none" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round" stroke-linejoin="round"/>'}
+function draw(){var h="";found.forEach(function(x){h+=line(x.p,x.col,10)});if(cur.length>1)h+=line(cur,"#b8325a",10);svg.innerHTML=h}
+function paint(){for(var r=0;r<8;r++)for(var c=0;c<6;c++){var e=cells[r][c],col=cellColor[r+","+c];e.className="sc";e.style.background=col||"";e.style.color=col?"#1b1b1f":""}
 cur.forEach(function(p){cells[p[0]][p[1]].classList.add("sel")});
-sw.textContent=cur.map(function(p){return L[p[0]][p[1]]}).join("")}
-function at(e){var el=document.elementFromPoint(e.clientX,e.clientY);if(!el||!el.classList.contains("sc"))return null;var p=[+el.dataset.r,+el.dataset.c];return state[key(p)]?null:p}
+sw.textContent=cur.map(function(p){return L[p[0]][p[1]]}).join("");draw()}
+function status(sp){return nFound===ALL.length?WIN:(sp?"You found the spangram! ":"")+nFound+" of "+ALL.length+" theme words found"}
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(found.map(function(x){return x.w})))}catch(e){}}
+function mark(x){x.done=true;nFound++;x.col=x.t==="sp"?YEL:PAL[ci++%PAL.length];found.push(x);x.p.forEach(function(p){cellColor[key(p)]=x.col})}
+function isFound(p){return !!cellColor[key(p)]}
+function at(e){var el=document.elementFromPoint(e.clientX,e.clientY);if(!el||!el.classList||!el.classList.contains("sc"))return null;var p=[+el.dataset.r,+el.dataset.c];return isFound(p)?null:p}
 function submit(){var k=cur.map(key).sort().join("|"),hit=null;
 ALL.forEach(function(x){if(!hit&&!x.done&&x.p.map(key).sort().join("|")===k)hit=x});
-if(hit){hit.done=true;nFound++;hit.p.forEach(function(p){state[key(p)]=hit.t});sm.textContent=nFound===ALL.length?WIN:(hit.t==="sp"?"You found the spangram! ":"")+nFound+" of "+ALL.length+" theme words found"}
-else{sm.textContent=cur.length>1?"Not a theme word":nFound+" of "+ALL.length+" theme words found"}
+if(hit){mark(hit);save();sm.textContent=status(hit.t==="sp")}
+else{sm.textContent=cur.length>1?"Not a theme word":status(false)}
 cur=[];paint()}
+document.getElementById("goStrands").addEventListener("click",function(){hub.hidden=true;box.hidden=false;window.scrollTo(0,0);draw()});
+document.getElementById("sback").addEventListener("click",function(){box.hidden=true;hub.hidden=false;window.scrollTo(0,0)});
+window.addEventListener("resize",draw);
 sg.addEventListener("contextmenu",function(e){e.preventDefault()});
 sg.addEventListener("pointerdown",function(e){var p=at(e);if(!p)return;down=true;moved=false;var i=idx(p);
 if(cur.length>1&&i===cur.length-1){down=false;submit();return}
@@ -187,7 +202,12 @@ sg.addEventListener("pointermove",function(e){if(!down)return;var p=at(e);if(!p)
 if(cur.length>1&&key(p)===key(cur[cur.length-2])){cur.pop();moved=true}else if(idx(p)<0&&adj(last,p)){cur.push(p);moved=true}paint()});
 function up(){if(down&&moved)submit();down=false}
 sg.addEventListener("pointerup",up);sg.addEventListener("pointercancel",function(){down=false});
-document.getElementById("sclear").addEventListener("click",function(){cur=[];paint()});
+document.getElementById("sclear").addEventListener("click",function(){
+if(!confirm("Start Strands over? This clears your found words."))return;
+ALL.forEach(function(x){x.done=false;x.col=null});
+found=[];cellColor={};nFound=0;ci=0;cur=[];save();sm.textContent=status(false);paint()});
+try{JSON.parse(localStorage.getItem(SAVE)||"[]").forEach(function(w){var x=ALL.filter(function(a){return a.w===w})[0];if(x&&!x.done)mark(x)})}catch(e){}
+sm.textContent=status(false);paint();
 })();
 </script>
 </body>
