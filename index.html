@@ -331,6 +331,22 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 #pboard .pcell .pclue { z-index: 3; }
 #pboard .pcell.placed { background-color: inherit; }
 
+
+/* Connections game */
+#connections{min-height:100vh;padding:0 14px 32px;max-width:760px;margin:0 auto;color:var(--fg)}
+.conn-intro{text-align:center;color:var(--sub);margin:20px 0 14px}
+#connSolved{display:grid;gap:8px;margin:12px auto;max-width:620px}
+.conn-group{border-radius:8px;padding:12px 8px;text-align:center;color:#171717;font-weight:700;letter-spacing:.4px}
+.conn-group strong{display:block;font-size:15px;margin-bottom:5px}.conn-group span{font-weight:500;font-size:14px}
+#connGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:620px;margin:0 auto}
+.conn-tile{min-height:74px;border:1px solid var(--line);border-radius:7px;background:var(--key);color:var(--fg);font:700 clamp(11px,2.7vw,15px) "Helvetica Neue",Arial,sans-serif;padding:5px 3px;cursor:pointer;overflow-wrap:anywhere}
+.conn-tile.selected{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.conn-controls{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:16px auto 8px;max-width:620px}
+#connStatus{text-align:center;min-height:24px;margin:10px;color:var(--sub)}
+#connMistakes{text-align:center;color:var(--sub);font-size:14px;margin:8px}
+.conn-color-green{background:#a8c99b}.conn-color-blue{background:#a8c8e8}.conn-color-yellow{background:#f1d66b}.conn-color-purple{background:#c5a6d9}
+@media(max-width:420px){#connGrid{gap:5px}.conn-tile{min-height:66px;padding:3px 1px}.conn-controls .btn{padding:9px 11px}}
+
 </style>
 </head>
 <body>
@@ -352,7 +368,7 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 </section>
 <section class="card">
 <div class="art c" aria-hidden="true"><svg width="100" height="100" viewBox="0 0 100 100"><g fill="#f2c94c"><rect x="2" y="2" width="21" height="21" rx="3"/><rect x="27" y="2" width="21" height="21" rx="3"/><rect x="52" y="2" width="21" height="21" rx="3"/><rect x="77" y="2" width="21" height="21" rx="3"/></g><g fill="#8fc27b"><rect x="2" y="27" width="21" height="21" rx="3"/><rect x="27" y="27" width="21" height="21" rx="3"/><rect x="52" y="27" width="21" height="21" rx="3"/><rect x="77" y="27" width="21" height="21" rx="3"/></g><g fill="#7fb0e6"><rect x="2" y="52" width="21" height="21" rx="3"/><rect x="27" y="52" width="21" height="21" rx="3"/><rect x="52" y="52" width="21" height="21" rx="3"/><rect x="77" y="52" width="21" height="21" rx="3"/></g><g fill="#b58be0"><rect x="2" y="77" width="21" height="21" rx="3"/><rect x="27" y="77" width="21" height="21" rx="3"/><rect x="52" y="77" width="21" height="21" rx="3"/><rect x="77" y="77" width="21" height="21" rx="3"/></g></svg></div>
-<div class="body"><h2>Connections</h2><p>Group the words that belong together.</p><button class="btn" type="button" disabled>Coming soon</button></div>
+<div class="body"><h2>Connections</h2><p>Group the words that belong together.</p><button class="btn" id="goConnections" type="button">Play</button></div>
 </section>
 <section class="card">
 <div class="art p" aria-hidden="true"><svg width="120" height="64" viewBox="0 0 120 64"><rect x="2" y="2" width="116" height="60" rx="10" fill="#fff" stroke="#b8325a" stroke-width="3"/><line x1="60" y1="8" x2="60" y2="56" stroke="#b8325a" stroke-width="3"/><g fill="#b8325a"><circle cx="30" cy="32" r="6"/><circle cx="82" cy="20" r="6"/><circle cx="82" cy="44" r="6"/><circle cx="98" cy="20" r="6"/><circle cx="98" cy="44" r="6"/></g></svg></div>
@@ -404,6 +420,22 @@ footer{text-align:center;color:var(--sub);font-size:14px;padding:0 20px 36px}
 <div id="smsg" role="status">0 of 6 theme words found</div>
 <div id="sgrid"></div>
 <button class="btn" id="sclear" type="button">Clear</button>
+</div>
+
+
+<div id="connections" hidden>
+  <div class="gh"><button class="back" id="connBack" type="button">&#8592; Games</button><h2>Connections</h2><span></span></div>
+  <p class="conn-intro">Find four groups of four words that share something in common.</p>
+  <div id="connSolved" aria-live="polite"></div>
+  <div id="connGrid" aria-label="Connections word tiles"></div>
+  <p id="connMistakes">Mistakes remaining: <span id="connLives">4</span></p>
+  <p id="connStatus" role="status" aria-live="polite">Select four words, then press Submit.</p>
+  <div class="conn-controls">
+    <button class="btn" id="connShuffle" type="button">Shuffle</button>
+    <button class="btn" id="connDeselect" type="button">Deselect all</button>
+    <button class="btn" id="connReset" type="button">Reset</button>
+    <button class="btn" id="connSubmit" type="button">Submit</button>
+  </div>
 </div>
 
 <script>
@@ -748,5 +780,32 @@ sm.textContent=status(false);paint();
   init();
 })();
 </script>
+
+<script>
+(function(){
+ const hub=document.getElementById('hub'), page=document.getElementById('connections');
+ const grid=document.getElementById('connGrid'), solvedEl=document.getElementById('connSolved');
+ const status=document.getElementById('connStatus'), livesEl=document.getElementById('connLives');
+ const groups=[
+  {name:'Date activities we have done together',color:'green',words:['MOVIE','SYMPHONY','DINNER','HIKE']},
+  {name:'Things we have gifted each other',color:'blue',words:['PILLOW','BACKPACK','ROPE','HAT']},
+  {name:'Wearable climbing accessories',color:'yellow',words:['HELMET','HARNESS','CLIMBING SHOES','CHALK BAG']},
+  {name:'Words after “love”',color:'purple',words:['BUG','BIRD','SICK','TRIANGLE']}
+ ];
+ let words=[],selected=[],found=[],mistakes=0,ended=false;
+ function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+ function start(){words=shuffle(groups.flatMap((g,i)=>g.words.map(w=>({word:w,group:i}))));selected=[];found=[];mistakes=0;ended=false;solvedEl.innerHTML='';livesEl.textContent='4';status.textContent='Select four words, then press Submit.';render();}
+ function render(){grid.innerHTML='';words.filter(x=>!found.includes(x.group)).forEach(x=>{let b=document.createElement('button');b.type='button';b.className='conn-tile'+(selected.includes(x.word)?' selected':'');b.textContent=x.word;b.setAttribute('aria-pressed',selected.includes(x.word));b.addEventListener('click',()=>{if(ended)return;if(selected.includes(x.word))selected=selected.filter(w=>w!==x.word);else if(selected.length<4)selected.push(x.word);render();});grid.appendChild(b);});document.getElementById('connSubmit').disabled=selected.length!==4||ended;}
+ function submit(){if(selected.length!==4||ended)return;let chosen=words.filter(x=>selected.includes(x.word));let ids=[...new Set(chosen.map(x=>x.group))];if(ids.length===1){let id=ids[0],g=groups[id];found.push(id);let row=document.createElement('div');row.className='conn-group conn-color-'+g.color;row.innerHTML='<strong>'+g.name+'</strong><span>'+g.words.join(' · ')+'</span>';solvedEl.appendChild(row);selected=[];status.textContent='Correct!';if(found.length===4){ended=true;status.textContent='Perfect! You found all four groups. Happy anniversary! ♥';}render();return;}
+ mistakes++;livesEl.textContent=String(4-mistakes);let oneAway=ids.length===2&&chosen.filter(x=>x.group===ids[0]).length===3||ids.length===2&&chosen.filter(x=>x.group===ids[1]).length===3;status.textContent=oneAway?'One away…':'Not quite. Try another group.';selected=[];if(mistakes>=4){ended=true;status.textContent='Game over — the groups are revealed below.';groups.forEach((g,i)=>{if(!found.includes(i)){let row=document.createElement('div');row.className='conn-group conn-color-'+g.color;row.innerHTML='<strong>'+g.name+'</strong><span>'+g.words.join(' · ')+'</span>';solvedEl.appendChild(row);}});}render();}
+ document.getElementById('goConnections').addEventListener('click',()=>{hub.hidden=true;page.hidden=false;start();window.scrollTo(0,0);});
+ document.getElementById('connBack').addEventListener('click',()=>{page.hidden=true;hub.hidden=false;window.scrollTo(0,0);});
+ document.getElementById('connShuffle').addEventListener('click',()=>{words=shuffle(words);render();});
+ document.getElementById('connDeselect').addEventListener('click',()=>{selected=[];render();});
+ document.getElementById('connReset').addEventListener('click',start);
+ document.getElementById('connSubmit').addEventListener('click',submit);
+})();
+</script>
+
 </body>
 </html>
