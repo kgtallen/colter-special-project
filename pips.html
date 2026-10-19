@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" type="image/png" href="/colter-special-project/favicon.png?v=4">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pips</title>
@@ -17,7 +16,7 @@ header a{justify-self:start;color:var(--rose);font:600 15px "Helvetica Neue",Ari
 h1{margin:0;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:26px}
 .sub{margin:14px 16px 0;text-align:center;color:var(--sub);font-size:14px}
 .bar{width:calc(var(--cs)*8 + 24px);display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 0}
-#time{background:#fff;color:#2b1520;border-radius:999px;padding:9px 14px;font:600 14px "SF Mono",Menlo,Consolas,monospace;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
+#time{background:#fff;color:#2b1520;border-radius:999px;padding:9px 14px;font:600 14px "SF Mono",Menlo,Consolas,monospace;white-space:nowrap}
 .pills{display:flex;gap:8px;align-items:center}
 .pill{border:0;border-radius:999px;padding:10px 16px;font:700 14px "SF Mono",Menlo,Consolas,monospace;cursor:pointer;background:#2a2326;color:#fff}
 .pill.light{background:#dedbd8;color:#fff}
@@ -36,16 +35,16 @@ button:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
 .cells{position:relative}
 .c{position:relative;box-shadow:inset 0 0 0 .5px rgba(60,60,90,.16)}
 .c.off{pointer-events:none;box-shadow:none}
-.edge{position:absolute;inset:3px;pointer-events:none;z-index:1}
+.edge{position:absolute;inset:1px;pointer-events:none;z-index:4}
 .c.ok{box-shadow:inset 0 0 0 3px #2e9e5b}
 .c.no{box-shadow:inset 0 0 0 3px #d9453d}
 .dia{position:absolute;right:0;bottom:0;width:calc(var(--cs)*.5);height:calc(var(--cs)*.5);transform:translate(50%,50%) rotate(45deg);border-radius:4px;display:flex;align-items:center;justify-content:center;z-index:8;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .dia span{transform:rotate(-45deg);color:#fff;font:800 calc(var(--cs)*.27)/1 "Helvetica Neue",Arial,sans-serif;white-space:nowrap}
-.ptile{position:absolute;z-index:3;background:#fff;box-sizing:border-box;overflow:hidden;pointer-events:none}
+.ptile{position:absolute;inset:0;z-index:3;display:block;background:#fff;box-sizing:border-box;overflow:hidden;pointer-events:none}
 .half{--h:var(--cs);width:var(--h);height:var(--h);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:calc(var(--h)*.17);flex:none}
 .half i{width:76%;height:76%;border-radius:50%;background:#58595c;place-self:center}
 .half i.off{visibility:hidden}
-.ptile .half{width:100%;height:100%;--h:var(--cs)}
+.ptile .half{display:grid;width:100%;height:100%;min-width:0;min-height:0;--h:var(--cs);padding:calc(var(--cs)*.17);flex:none}
 #tray{width:calc(var(--cs)*8 + 24px);display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px;margin-top:4px}
 .slot{height:96px;display:flex;align-items:center;justify-content:center}
 .dom{--h:40px;display:flex;background:#fff;border-radius:11px;border:2px solid #b9b6b4;box-shadow:0 5px 0 #a9a6a4;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
@@ -149,8 +148,8 @@ function render(){
   el.appendChild(edge);
   var o=occ[r+","+c];
   if(o){var tile=document.createElement("div");tile.className="ptile";
-   var dir=o.dir,m="0px",I="3px",RR="11px";
-   tile.style.top=(dir==="u"?"-1px":I);tile.style.bottom=(dir==="d"?"-1px":I);tile.style.left=(dir==="l"?"-1px":I);tile.style.right=(dir==="r"?"-1px":I);
+   var dir=o.dir,RR="11px";
+   tile.style.top="0";tile.style.bottom="0";tile.style.left="0";tile.style.right="0";
    tile.style.border="2px solid #8d8a88";
    if(dir==="r"){tile.style.borderRight="1px solid #d3d0ce";tile.style.borderRadius=RR+" 0 0 "+RR}
    else if(dir==="l"){tile.style.borderLeft="1px solid #d3d0ce";tile.style.borderRadius="0 "+RR+" "+RR+" 0"}
