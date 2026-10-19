@@ -70,7 +70,7 @@ button:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
 </div>
 <div id="info" hidden>
 <p><b>How to play:</b> place all 16 dominoes so every square is covered. Drag a domino onto the board, tap a domino to rotate it, and tap a placed domino to take it back.</p>
-<p><b>Rules:</b> a plain number is the total the pips in that region must add up to. &lt;3 means the total is under 3, and &gt;5 means the total is over 5. Regions with no label have no rule. Check turns on once every domino is placed.</p>
+<p><b>Rules:</b> a plain number is the total the pips in that region must add up to. &lt;3 means the total is under 3, &gt;5 means the total is over 5, and ≠ means all pips in that region must be different. Regions with no label have no rule. Check turns on once every domino is placed.</p>
 </div>
 <div id="board" aria-label="Heart-shaped domino puzzle"></div>
 <div id="msg" role="status" aria-live="polite"></div>
@@ -96,7 +96,7 @@ var regions=[
 {cells:[[4,4],[5,3],[5,4]],type:"gt",n:9},
 {cells:[[3,3],[4,3]],type:"lt",n:3},
 {cells:[[0,5],[0,6]],type:"eq",n:2},
-{cells:[[1,6],[1,7],[2,7]],type:"eq",n:5},
+{cells:[[1,6],[1,7],[2,7]],type:"neq"},
 {cells:[[3,2],[4,2]],type:"eq",n:5},
 {cells:[[2,3],[2,4],[2,5],[3,4]],type:"gt",n:13}
 ];
