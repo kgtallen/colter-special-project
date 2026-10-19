@@ -54,7 +54,10 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 .krow{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
 .k{flex:1;max-width:44px;height:52px;border:0;border-radius:5px;background:var(--key);color:var(--fg);font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;padding:0}
 .k.wide{flex:1.6;max-width:66px;font-size:12px}
-.k.ok,.k.near,.k.miss{color:var(--tf)}
+/* Wordle keyboard feedback: green = correct position, yellow = present elsewhere, gray = absent */
+.k.ok{background:var(--ok);color:#fff}
+.k.near{background:var(--near);color:#fff}
+.k.miss{background:var(--miss);color:#fff}
 @media (prefers-reduced-motion:reduce){.shake{animation:none}}
 .s{background:#f6e9b8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .s{background:#52471f}}
