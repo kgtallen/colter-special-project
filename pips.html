@@ -249,7 +249,7 @@ function evalRegion(g){
 checkBtn.addEventListener("click",function(){
  if(checkBtn.disabled)return;badRegions={};var bad=0;
  regions.forEach(function(g){if(!evalRegion(g)){badRegions[g.id]=true;bad++}});
- if(!bad){won=true;pauseT();say("Solved in "+fmt(nowT())+"! Every region follows its rule. Five years, one perfect match. \u2665")}
+ if(!bad){won=true;pauseT();say("Solved in "+fmt(nowT())+"! Every region follows its rule. Fantastic work Colter. \u2665")}
  else say(bad+(bad===1?" region doesn\u2019t":" regions don\u2019t")+" follow the rules yet. The red outlines show which ones.");
  render();updateCheck();
 });
