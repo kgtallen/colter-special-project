@@ -170,7 +170,8 @@ function paint(){for(var r=0;r<8;r++)for(var c=0;c<6;c++){var e=cells[r][c],col=
 cur.forEach(function(p){cells[p[0]][p[1]].classList.add("sel")});
 sw.textContent=cur.map(function(p){return L[p[0]][p[1]]}).join("");draw()}
 function status(sp){return nFound===ALL.length?WIN:(sp?"You found the spangram! ":"")+nFound+" of "+ALL.length+" theme words found"}
-function save(){try{localStorage.setItem(SAVE,JSON.stringify(found.map(function(x){return x.w})))}catch(e){}}
+function save(){try{localStorage.setItem(SAVE,JSON.stringify(found.map(function(x){return x.w})))}catch(e){};syncProgress()}
+function syncProgress(){try{var p=JSON.parse(localStorage.getItem("anniversary-progress")||"{}");if(nFound===ALL.length){p.strands={complete:true,line:"Found all 6 words"}}else{delete p.strands}localStorage.setItem("anniversary-progress",JSON.stringify(p));if(window.refreshProgress)window.refreshProgress()}catch(e){}}
 function mark(x){x.done=true;nFound++;x.col=x.t==="sp"?YEL:PAL[ci++%PAL.length];found.push(x);x.p.forEach(function(p){cellColor[key(p)]=x.col})}
 function isFound(p){return !!cellColor[key(p)]}
 function at(e){var el=document.elementFromPoint(e.clientX,e.clientY);if(!el||!el.classList||!el.classList.contains("sc"))return null;var p=[+el.dataset.r,+el.dataset.c];return isFound(p)?null:p}
@@ -192,9 +193,9 @@ function up(){if(down&&moved)submit();down=false}
 sg.addEventListener("pointerup",up);sg.addEventListener("pointercancel",function(){down=false});
 document.getElementById("sclear").addEventListener("click",function(){
 ALL.forEach(function(x){x.done=false;x.col=null});
-found=[];cellColor={};nFound=0;ci=0;cur=[];save();sm.textContent=status(false);paint()});
+found=[];cellColor={};nFound=0;ci=0;cur=[];save();syncProgress();sm.textContent=status(false);paint()});
 try{JSON.parse(localStorage.getItem(SAVE)||"[]").forEach(function(w){var x=ALL.filter(function(a){return a.w===w})[0];if(x&&!x.done)mark(x)})}catch(e){}
-sm.textContent=status(false);paint();
+syncProgress();sm.textContent=status(false);paint();
 })();
 </script>
 
