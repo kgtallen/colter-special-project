@@ -75,6 +75,22 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 .conn-color-green{background:#a8c99b}.conn-color-blue{background:#a8c8e8}.conn-color-yellow{background:#f1d66b}.conn-color-purple{background:#c5a6d9}
 @media(max-width:420px){#connGrid{gap:5px}.conn-tile{min-height:66px;padding:3px 1px}.conn-controls .btn{padding:9px 11px}}
 
+
+/* Anniversary letter reveal */
+#finalReveal{display:none;max-width:680px;margin:6px auto 44px;padding:0 20px;text-align:center;animation:revealIn .7s ease both}
+#finalReveal.unlocked{display:block}
+#finalReveal .reveal-rule{height:1px;background:var(--line);margin:8px auto 28px;max-width:560px}
+#finalReveal .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin:0 0 12px}
+#finalReveal h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,6vw,43px);line-height:1.15;letter-spacing:-.6px;margin:0 0 20px;color:var(--fg);font-weight:500}
+#finalReveal .couple-photo{display:block;width:100%;max-width:490px;max-height:620px;object-fit:contain;margin:0 auto 24px;border-radius:5px;box-shadow:0 12px 32px rgba(43,21,32,.13);border:1px solid var(--line);background:var(--card)}
+#finalReveal .letter-title{font:500 clamp(23px,4.8vw,31px)/1.25 Georgia,'Times New Roman',serif;margin:0 auto 20px;max-width:520px}
+#openLetter{margin:0 auto;padding:12px 26px;border-radius:999px;border:1px solid var(--rose);background:var(--rose);color:#fff;font:600 15px 'Helvetica Neue',Arial,sans-serif;cursor:pointer;transition:transform .18s,box-shadow .18s}
+#openLetter:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(184,50,90,.18)}
+#letterPlaceholder{display:none;max-width:490px;margin:22px auto 0;padding:24px 22px;border:1px solid var(--line);border-radius:10px;background:var(--card);text-align:left;color:var(--fg);line-height:1.7;white-space:pre-wrap}
+#letterPlaceholder.open{display:block}
+@keyframes revealIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#finalReveal{animation:none}#openLetter{transition:none}}
+
 </style>
 </head>
 <body>
@@ -109,6 +125,16 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 </main>
 <footer>Made for our 5 year anniversary. &#9829;</footer>
 </div>
+
+<section id="finalReveal" aria-labelledby="revealHeading" aria-live="polite">
+  <div class="reveal-rule"></div>
+  <p class="eyebrow">For you, always</p>
+  <h2 id="revealHeading">You made it. <span style="color:var(--rose)">♥</span></h2>
+  <img class="couple-photo" src="./anniversary-photo.jpg" alt="The two of us sitting together among the rocks on an outdoor adventure" loading="lazy">
+  <h3 class="letter-title">A special letter for my special boy</h3>
+  <button id="openLetter" type="button" aria-expanded="false" aria-controls="letterPlaceholder">Open your letter ♥</button>
+  <div id="letterPlaceholder" role="region" aria-label="Anniversary letter">Your letter will go here when you're ready to add it. ♥</div>
+</section>
 
 <div id="strands" hidden>
 <div class="gh"><button class="back" id="sback" type="button">&#8592; Games</button><h2>Strands</h2><span></span></div>
@@ -234,8 +260,15 @@ syncProgress();sm.textContent=status(false);paint();
 <script>
 (function(){
  function read(){try{return JSON.parse(localStorage.getItem('anniversary-progress')||'{}')}catch(e){return {}}}
- function refresh(){var p=read(),ids=['wordle','strands','connections','pips','crossword'],count=0;ids.forEach(function(id){var card=document.querySelector('[data-game="'+id+'"]');if(!card)return;var old=card.querySelector('.progressLine');if(old)old.remove();card.classList.toggle('complete',!!(p[id]&&p[id].complete));if(p[id]&&p[id].complete){count++;var line=document.createElement('p');line.className='progressLine';line.textContent='✓ '+p[id].line;card.querySelector('.body').insertBefore(line,card.querySelector('.btn'));}});var e=document.getElementById('progressSummary');if(e)e.textContent=count===5?'All five complete ♥':count+' of 5 puzzles complete';}
+ function refresh(){var p=read(),ids=['wordle','strands','connections','pips','crossword'],count=0;ids.forEach(function(id){var card=document.querySelector('[data-game="'+id+'"]');if(!card)return;var old=card.querySelector('.progressLine');if(old)old.remove();card.classList.toggle('complete',!!(p[id]&&p[id].complete));if(p[id]&&p[id].complete){count++;var line=document.createElement('p');line.className='progressLine';line.textContent='✓ '+p[id].line;card.querySelector('.body').insertBefore(line,card.querySelector('.btn'));}});var e=document.getElementById('progressSummary');if(e)e.textContent=count===5?'All five complete ♥':count+' of 5 puzzles complete';var reveal=document.getElementById('finalReveal');if(reveal)reveal.classList.toggle('unlocked',count===5);}
  window.addEventListener('storage',refresh);window.addEventListener('pageshow',refresh);window.refreshProgress=refresh;document.addEventListener('DOMContentLoaded',refresh);refresh();
+})();
+</script>
+<script>
+(function(){
+ var btn=document.getElementById('openLetter'),letter=document.getElementById('letterPlaceholder');
+ if(!btn||!letter)return;
+ btn.addEventListener('click',function(){var open=letter.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'Close your letter ♥':'Open your letter ♥';});
 })();
 </script>
 </body>
