@@ -135,7 +135,8 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <script>
 (function(){
 var hub=document.getElementById("hub");
-function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")};hub.hidden=!!pages[hash];Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});if(!pages[hash])hub.hidden=false;if(write&&location.hash!==(hash?'#'+hash:'')){if(hash)location.hash=hash;else history.replaceState(null,'',location.pathname+location.search)}window.scrollTo(0,0);if(hash==='strands')draw();if(hash==='connections')renderConn();}
+function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")};hub.hidden=!!pages[hash];Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});if(!pages[hash])hub.hidden=false;if(write&&location.hash!==(hash?'#'+hash:'')){if(hash)location.hash=hash;else history.replaceState(null,'',location.pathname+location.search)}window.scrollTo(0,0);if(hash==='strands')draw();if(hash==='connections'&&window.renderConn)window.renderConn();}
+window.showPage=showPage;
 window.addEventListener("hashchange",function(){showPage(location.hash.slice(1),false)});
 window.addEventListener("popstate",function(){showPage(location.hash.slice(1),false)});
 window.addEventListener("load",function(){showPage(location.hash.slice(1),false)});
@@ -216,8 +217,8 @@ sm.textContent=status(false);paint();
  function addGroup(id){let g=groups[id],row=document.createElement('div');row.className='conn-group conn-color-'+g.color;let strong=document.createElement('strong'),span=document.createElement('span');strong.textContent=g.name;span.textContent=g.words.join(' · ');row.appendChild(strong);row.appendChild(span);solvedEl.appendChild(row);}
  function submit(){if(selected.length!==4||ended)return;let chosen=words.filter(x=>selected.includes(x.word)),ids=[...new Set(chosen.map(x=>x.group))];if(ids.length===1){let id=ids[0];found.push(id);selected=[];status.textContent='Correct!';if(found.length===4){ended=true;status.textContent="Perfect! You found all four groups. You\'re on a roll! The bestest there ever was! ♥";progress('connections',{complete:true,line:mistakes===0?'Solved with no mistakes':'Solved with '+mistakes+' mistake'+(mistakes===1?'':'s')});}renderConn();return;}
  mistakes++;let oneAway=ids.length===2&&(chosen.filter(x=>x.group===ids[0]).length===3||chosen.filter(x=>x.group===ids[1]).length===3);status.textContent=oneAway?'One away…':'Not quite. Try another group.';selected=[];if(mistakes>=4){ended=true;status.textContent='Game over — the groups are revealed below.';}renderConn();}
- document.getElementById('goConnections').addEventListener('click',()=>showPage('connections',true));
- document.getElementById('connBack').addEventListener('click',()=>showPage('',true));
+ document.getElementById('goConnections').addEventListener('click',()=>window.showPage('connections',true));
+ document.getElementById('connBack').addEventListener('click',()=>window.showPage('',true));
  document.getElementById('connShuffle').addEventListener('click',()=>{words=shuffle(words);renderConn();});
  document.getElementById('connDeselect').addEventListener('click',()=>{selected=[];renderConn();});
  document.getElementById('connReset').addEventListener('click',start);
