@@ -249,11 +249,12 @@ function evalRegion(g){
 checkBtn.addEventListener("click",function(){
  if(checkBtn.disabled)return;badRegions={};var bad=0;
  regions.forEach(function(g){if(!evalRegion(g)){badRegions[g.id]=true;bad++}});
- if(!bad){won=true;pauseT();say("Solved in "+fmt(nowT())+"! Every region follows its rule. Fantastic work Colter. \u2665")}
+ if(!bad){won=true;pauseT();say("Solved in "+fmt(nowT())+"! Every region follows its rule. Fantastic work Colter. \u2665");try{var pr=JSON.parse(localStorage.getItem("anniversary-progress")||"{}");pr.pips={complete:true,line:"Finished in "+fmt(nowT())};localStorage.setItem("anniversary-progress",JSON.stringify(pr))}catch(e){}}
  else say(bad+(bad===1?" region doesn\u2019t":" regions don\u2019t")+" follow the rules yet. The red outlines show which ones.");
  render();updateCheck();
 });
 function reset(){
+ try{var pr=JSON.parse(localStorage.getItem("anniversary-progress")||"{}");delete pr.pips;localStorage.setItem("anniversary-progress",JSON.stringify(pr))}catch(e){}
  pieces=DOMS.map(function(d,i){return {id:i,a:d[0],b:d[1],ori:0,pos:null,floating:false}});
  occ={};badRegions={};won=false;elapsed=0;startAt=null;tick();say("");build();render();renderTray();updateCheck();
 }
