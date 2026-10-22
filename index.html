@@ -80,6 +80,10 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 #finalReveal{display:none;max-width:680px;margin:6px auto 44px;padding:0 20px;text-align:center;animation:revealIn .7s ease both}
 #finalReveal.unlocked{display:block}
 #finalReveal .reveal-rule{height:1px;background:var(--line);margin:8px auto 28px;max-width:560px}
+#letterNav{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:560px;margin:0 auto 20px}
+#letterNav .btn{margin:0;padding:9px 16px;font-size:14px}
+#returnLetter{display:none}
+#returnLetter.visible{display:inline-block}
 #finalReveal .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin:0 0 12px}
 #finalReveal h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,6vw,43px);line-height:1.15;letter-spacing:-.6px;margin:0 0 20px;color:var(--fg);font-weight:500}
 #finalReveal .couple-photo{display:block;width:100%;max-width:490px;max-height:620px;object-fit:contain;margin:0 auto 24px;border-radius:5px;box-shadow:0 12px 32px rgba(43,21,32,.13);border:1px solid var(--line);background:var(--card)}
@@ -97,7 +101,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <div id="hub">
 <div class="top">
 <h1>Games</h1>
-<p class="date">Friday, November 13, 2026</p><p id="progressSummary" aria-live="polite">0 of 5 puzzles complete</p>
+<p class="date">Friday, November 13, 2026</p><p id="progressSummary" aria-live="polite">0 of 5 puzzles complete</p><button id="returnLetterFromGames" class="btn" type="button" style="display:none;margin:12px auto 0">Return to your letter ♥</button>
 
 </div>
 <div class="rule" aria-hidden="true">&#9825;</div>
@@ -127,6 +131,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 </div>
 
 <section id="finalReveal" aria-labelledby="revealHeading" aria-live="polite">
+  <nav id="letterNav" aria-label="Anniversary navigation"><button class="btn" id="backToGames" type="button">← Back to games</button></nav>
   <div class="reveal-rule"></div>
   <p class="eyebrow">For you, always</p>
   <h2 id="revealHeading">You made it. <span style="color:var(--rose)">♥</span></h2>
@@ -164,7 +169,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <script>
 (function(){
 var hub=document.getElementById("hub");
-function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")};hub.hidden=!!pages[hash];Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});if(!pages[hash])hub.hidden=false;if(write&&location.hash!==(hash?'#'+hash:'')){if(hash)location.hash=hash;else history.replaceState(null,'',location.pathname+location.search)}window.scrollTo(0,0);if(hash==='strands')draw();if(hash==='connections'&&window.renderConn)window.renderConn();}
+function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")},reveal=document.getElementById("finalReveal"),unlocked=reveal&&reveal.classList.contains("unlocked");if(hash==="letter"&&unlocked){hub.hidden=true;reveal.style.display="block";Object.keys(pages).forEach(function(k){pages[k].hidden=true});}else if(hash==="strands"||hash==="connections"){hub.hidden=true;reveal.style.display="none";Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});}else{Object.keys(pages).forEach(function(k){pages[k].hidden=true});if(unlocked&&hash!=="games"){hub.hidden=true;reveal.style.display="block";hash="letter";}else{hub.hidden=false;reveal.style.display="none";hash=hash==="games"?"games":"";}}if(write&&location.hash!== (hash?"#"+hash:"")){if(hash)location.hash=hash;else history.replaceState(null,"",location.pathname+location.search)}window.scrollTo(0,0);if(hash==="strands")draw();if(hash==="connections"&&window.renderConn)window.renderConn();}
 window.showPage=showPage;
 window.addEventListener("hashchange",function(){showPage(location.hash.slice(1),false)});
 window.addEventListener("popstate",function(){showPage(location.hash.slice(1),false)});
@@ -260,7 +265,7 @@ syncProgress();sm.textContent=status(false);paint();
 <script>
 (function(){
  function read(){try{return JSON.parse(localStorage.getItem('anniversary-progress')||'{}')}catch(e){return {}}}
- function refresh(){var p=read(),ids=['wordle','strands','connections','pips','crossword'],count=0;ids.forEach(function(id){var card=document.querySelector('[data-game="'+id+'"]');if(!card)return;var old=card.querySelector('.progressLine');if(old)old.remove();card.classList.toggle('complete',!!(p[id]&&p[id].complete));if(p[id]&&p[id].complete){count++;var line=document.createElement('p');line.className='progressLine';line.textContent='✓ '+p[id].line;card.querySelector('.body').insertBefore(line,card.querySelector('.btn'));}});var e=document.getElementById('progressSummary');if(e)e.textContent=count===5?'All five complete ♥':count+' of 5 puzzles complete';var reveal=document.getElementById('finalReveal');if(reveal)reveal.classList.toggle('unlocked',count===5);}
+ function refresh(){var p=read(),ids=['wordle','strands','connections','pips','crossword'],count=0;ids.forEach(function(id){var card=document.querySelector('[data-game="'+id+'"]');if(!card)return;var old=card.querySelector('.progressLine');if(old)old.remove();card.classList.toggle('complete',!!(p[id]&&p[id].complete));if(p[id]&&p[id].complete){count++;var line=document.createElement('p');line.className='progressLine';line.textContent='✓ '+p[id].line;card.querySelector('.body').insertBefore(line,card.querySelector('.btn'));}});var e=document.getElementById('progressSummary');if(e)e.textContent=count===5?'All five complete ♥':count+' of 5 puzzles complete';var reveal=document.getElementById('finalReveal'),letterNav=document.getElementById('returnLetterFromGames');if(reveal){reveal.classList.toggle('unlocked',count===5);if(letterNav)letterNav.style.display=count===5?'block':'none';if(count===5&&document.getElementById('hub')&&!document.getElementById('hub').hidden&&location.hash!=='#games'){window.showPage('letter',true);}}}
  window.addEventListener('storage',refresh);window.addEventListener('pageshow',refresh);window.refreshProgress=refresh;document.addEventListener('DOMContentLoaded',refresh);refresh();
 })();
 </script>
@@ -269,6 +274,7 @@ syncProgress();sm.textContent=status(false);paint();
  var btn=document.getElementById('openLetter'),letter=document.getElementById('letterPlaceholder');
  if(!btn||!letter)return;
  btn.addEventListener('click',function(){var open=letter.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'Close your letter ♥':'Open your letter ♥';});
+ var back=document.getElementById('backToGames'),shortcut=document.getElementById('returnLetterFromGames');if(back)back.addEventListener('click',function(){window.showPage('games',true)});if(shortcut)shortcut.addEventListener('click',function(){window.showPage('letter',true)});
 })();
 </script>
 </body>
