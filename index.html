@@ -22,6 +22,8 @@ h1 span{color:var(--rose);font-size:.58em;vertical-align:.1em}
 .rule::before,.rule::after{content:"";flex:1;height:1px;background:var(--line)}
 .date{display:flex;align-items:center;gap:14px;width:100%;max-width:760px;margin:7px auto 0;padding:5px 0;border:0;border-radius:0;background:transparent;font:700 12px "Helvetica Neue",Arial,sans-serif;letter-spacing:2.5px;text-transform:uppercase;color:var(--rose);white-space:nowrap}
 .date::before,.date::after{content:"";height:1px;background:var(--line);flex:1;min-width:12px}
+#progressSummary{text-align:center;color:var(--sub);font-size:13px;margin:7px 0 0;letter-spacing:.2px}
+.card.complete{border:2px solid var(--ok)}.progressLine{font-size:13px!important;color:var(--ok)!important;font-weight:700;margin-top:3px!important}
 main{max-width:760px;margin:0 auto;padding:0 16px 34px;display:grid;grid-template-columns:1fr;gap:14px}
 @media (min-width:600px){main{grid-template-columns:1fr 1fr}}
 .card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
@@ -31,35 +33,13 @@ h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:24px;font-weig
 .body p{margin:0;color:var(--sub);font-size:15px;line-height:1.45}
 .btn{margin-top:12px;align-self:flex-start;padding:10px 24px;border-radius:999px;border:1.5px solid var(--fg);color:var(--fg);background:transparent;font:600 15px "Helvetica Neue",Arial,sans-serif;cursor:pointer}
 .btn:hover{background:var(--fg);color:var(--bg)}
-.btn:focus-visible,.k:focus-visible,.back:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.btn:focus-visible,.back:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
 .btn:disabled{border-style:dashed;border-color:var(--line);color:var(--sub);cursor:default;background:transparent}
 .w{background:#dcebd3}.c{background:#e6dcf3}.p{background:#fbdccf}.x{background:#d6e4f3}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .w{background:#33452d}:root:not([data-theme="light"]) .c{background:#3f3352}:root:not([data-theme="light"]) .p{background:#58352c}:root:not([data-theme="light"]) .x{background:#2c3f55}}
 :root[data-theme="dark"] .w{background:#33452d}:root[data-theme="dark"] .c{background:#3f3352}:root[data-theme="dark"] .p{background:#58352c}:root[data-theme="dark"] .x{background:#2c3f55}
 svg{display:block}
 footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;padding:0 20px 30px}
-#game{min-height:100vh;display:flex;flex-direction:column;align-items:center}
-.gh{width:100%;max-width:480px;display:grid;grid-template-columns:90px 1fr 90px;align-items:center;padding:12px 12px 10px;border-bottom:1px solid var(--line)}
-.gh h2{text-align:center;font-size:26px}
-.back{justify-self:start;background:none;border:0;color:var(--rose);font:600 15px "Helvetica Neue",Arial,sans-serif;cursor:pointer;padding:8px 4px}
-#msg{min-height:28px;margin:12px 0 4px;font-weight:600;text-align:center;padding:0 16px}
-#board{display:grid;gap:6px;margin:6px 0 14px}
-.row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.tile{width:min(14vw,58px);height:min(14vw,58px);border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:clamp(22px,7vw,30px);font-weight:700;text-transform:uppercase}
-.tile.filled{border-color:var(--miss)}
-.tile.ok,.tile.near,.tile.miss{color:var(--tf);border-color:transparent}
-.ok{background:var(--ok)}.near{background:var(--near)}.miss{background:var(--miss)}
-.shake{animation:shake .4s}
-@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-#kb{width:100%;max-width:480px;padding:0 6px 10px;margin-top:auto}
-.krow{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
-.k{flex:1;max-width:44px;height:52px;border:0;border-radius:5px;background:var(--key);color:var(--fg);font-size:14px;font-weight:700;text-transform:uppercase;cursor:pointer;padding:0}
-.k.wide{flex:1.6;max-width:66px;font-size:12px}
-/* Wordle keyboard feedback: green = correct position, yellow = present elsewhere, gray = absent */
-.k.ok{background:var(--ok);color:#fff}
-.k.near{background:var(--near);color:#fff}
-.k.miss{background:var(--miss);color:#fff}
-@media (prefers-reduced-motion:reduce){.shake{animation:none}}
 .s{background:#f6e9b8}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .s{background:#52471f}}
 :root[data-theme="dark"] .s{background:#52471f}
@@ -71,7 +51,6 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 .sc{width:min(13vw,54px);height:min(13vw,54px);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--key);font:700 clamp(18px,5.6vw,24px) "Helvetica Neue",Arial,sans-serif;text-transform:uppercase;cursor:pointer}
 .sc.wd{background:#aecbed;color:#1b1b1f}.sc.sp{background:#f2d04d;color:#1b1b1f}.sc.sel{background:var(--rose);color:#fff}
 #sclear{margin-top:18px}
-#wclear{margin:6px 0 24px}
 
 #sgrid{position:relative}
 .sc{position:relative;z-index:1}
@@ -99,41 +78,33 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <div id="hub">
 <div class="top">
 <h1>Games</h1>
-<p class="date">Friday, November 13, 2026</p>
+<p class="date">Friday, November 13, 2026</p><p id="progressSummary" aria-live="polite">0 of 5 puzzles complete</p>
 
 </div>
 <div class="rule" aria-hidden="true">&#9825;</div>
 <main>
-<section class="card">
+<section class="card" data-game="wordle">
 <div class="art w" aria-hidden="true"><svg width="120" height="76" viewBox="0 0 120 76"><rect x="2" y="2" width="34" height="34" rx="3" fill="#5a9a5c"/><rect x="43" y="2" width="34" height="34" rx="3" fill="#c8a232"/><rect x="84" y="2" width="34" height="34" rx="3" fill="#797b80"/><rect x="2" y="40" width="34" height="34" rx="3" fill="#797b80"/><rect x="43" y="40" width="34" height="34" rx="3" fill="#5a9a5c"/><rect x="84" y="40" width="34" height="34" rx="3" fill="#c8a232"/></svg></div>
-<div class="body"><h2>Wordle</h2><p>Five letters, six tries.</p><button class="btn" id="goWordle" type="button">Play</button></div>
+<div class="body"><h2>Wordle</h2><p>Five letters, six tries.</p><a class="btn" href="wordle.html" style="text-decoration:none;display:inline-block">Play</a></div>
 </section>
-<section class="card">
+<section class="card" data-game="strands">
 <div class="art s" aria-hidden="true"><svg width="120" height="76" viewBox="0 0 120 76"><polyline points="14,60 38,40 62,56 86,30 106,14" fill="none" stroke="#f2d04d" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><g fill="#aecbed"><circle cx="14" cy="16" r="9"/><circle cx="40" cy="14" r="9"/><circle cx="68" cy="14" r="9"/><circle cx="16" cy="34" r="9"/><circle cx="100" cy="58" r="9"/></g><g fill="#f2d04d"><circle cx="14" cy="60" r="9"/><circle cx="38" cy="40" r="9"/><circle cx="62" cy="56" r="9"/><circle cx="86" cy="30" r="9"/><circle cx="106" cy="14" r="9"/></g></svg></div>
 <div class="body"><h2>Strands</h2><p>Find the hidden words.</p><button class="btn" id="goStrands" type="button">Play</button></div>
 </section>
-<section class="card">
+<section class="card" data-game="connections">
 <div class="art c" aria-hidden="true"><svg width="100" height="100" viewBox="0 0 100 100"><g fill="#f2c94c"><rect x="2" y="2" width="21" height="21" rx="3"/><rect x="27" y="2" width="21" height="21" rx="3"/><rect x="52" y="2" width="21" height="21" rx="3"/><rect x="77" y="2" width="21" height="21" rx="3"/></g><g fill="#8fc27b"><rect x="2" y="27" width="21" height="21" rx="3"/><rect x="27" y="27" width="21" height="21" rx="3"/><rect x="52" y="27" width="21" height="21" rx="3"/><rect x="77" y="27" width="21" height="21" rx="3"/></g><g fill="#7fb0e6"><rect x="2" y="52" width="21" height="21" rx="3"/><rect x="27" y="52" width="21" height="21" rx="3"/><rect x="52" y="52" width="21" height="21" rx="3"/><rect x="77" y="52" width="21" height="21" rx="3"/></g><g fill="#b58be0"><rect x="2" y="77" width="21" height="21" rx="3"/><rect x="27" y="77" width="21" height="21" rx="3"/><rect x="52" y="77" width="21" height="21" rx="3"/><rect x="77" y="77" width="21" height="21" rx="3"/></g></svg></div>
 <div class="body"><h2>Connections</h2><p>Group the words that belong together.</p><button class="btn" id="goConnections" type="button">Play</button></div>
 </section>
-<section class="card">
+<section class="card" data-game="pips">
 <div class="art p" aria-hidden="true"><svg width="120" height="64" viewBox="0 0 120 64"><rect x="2" y="2" width="116" height="60" rx="10" fill="#fff" stroke="#b8325a" stroke-width="3"/><line x1="60" y1="8" x2="60" y2="56" stroke="#b8325a" stroke-width="3"/><g fill="#b8325a"><circle cx="30" cy="32" r="6"/><circle cx="82" cy="20" r="6"/><circle cx="82" cy="44" r="6"/><circle cx="98" cy="20" r="6"/><circle cx="98" cy="44" r="6"/></g></svg></div>
 <div class="body"><h2>Pips</h2><p>Place every domino where it fits.</p><a class="btn" id="goPips" href="pips.html" style="text-decoration:none;display:inline-block">Play</a></div>
 </section>
-<section class="card">
+<section class="card" data-game="crossword">
 <div class="art x" aria-hidden="true"><svg width="100" height="100" viewBox="0 0 100 100"><g stroke="#2b1520" stroke-width="2"><rect x="2" y="2" width="96" height="96" fill="#fff"/><rect x="2" y="2" width="24" height="24" fill="#2b1520"/><rect x="74" y="2" width="24" height="24" fill="#2b1520"/><rect x="38" y="38" width="24" height="24" fill="#2b1520"/><rect x="2" y="74" width="24" height="24" fill="#2b1520"/><rect x="74" y="74" width="24" height="24" fill="#2b1520"/></g></svg></div>
 <div class="body"><h2>The Crossword</h2><p>Our five-year puzzle.</p><a class="btn" href="crossword.html" style="text-decoration:none;display:inline-block">Play</a></div>
 </section>
 </main>
 <footer>Made for our 5 year anniversary. &#9829;</footer>
-</div>
-
-<div id="game" hidden>
-<div class="gh"><button class="back" id="back" type="button">&#8592; Games</button><h2>Wordle</h2><span></span></div>
-<div id="msg" role="status" aria-live="polite">Guess the five-letter word in six tries.</div>
-<div id="board"></div>
-<div id="kb"></div>
-<button class="btn" id="wclear" type="button">Clear</button>
 </div>
 
 <div id="strands" hidden>
@@ -163,40 +134,14 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 
 <script>
 (function(){
-var ANSWER="glove",MAX=6,LEN=5,WIN_NOTE="I glove you very much Colter. Happy anniversary!";
-var hub=document.getElementById("hub"),game=document.getElementById("game");
-document.getElementById("goWordle").addEventListener("click",function(){hub.hidden=true;game.hidden=false;window.scrollTo(0,0)});
-document.getElementById("back").addEventListener("click",function(){game.hidden=true;hub.hidden=false;window.scrollTo(0,0)});
-var rows=[],guesses=[],cur="",done=false,keyState={};
-var board=document.getElementById("board"),msg=document.getElementById("msg"),kb=document.getElementById("kb");
-for(var r=0;r<MAX;r++){var row=document.createElement("div");row.className="row";var t=[];for(var c=0;c<LEN;c++){var d=document.createElement("div");d.className="tile";row.appendChild(d);t.push(d)}board.appendChild(row);rows.push({el:row,tiles:t})}
-var layout=["qwertyuiop","asdfghjkl","*zxcvbnm#"],keys={};
-layout.forEach(function(s){var kr=document.createElement("div");kr.className="krow";s.split("").forEach(function(ch){var b=document.createElement("button");b.className="k";b.type="button";if(ch==="*"){b.textContent="Enter";b.className+=" wide";b.dataset.k="Enter"}else if(ch==="#"){b.textContent="Del";b.className+=" wide";b.dataset.k="Backspace"}else{b.textContent=ch;b.dataset.k=ch;keys[ch]=b}b.addEventListener("click",function(){press(b.dataset.k)});kr.appendChild(b)});kb.appendChild(kr)});
-document.addEventListener("keydown",function(e){if(game.hidden||e.ctrlKey||e.metaKey||e.altKey)return;var k=e.key;if(k==="Enter"||k==="Backspace"||/^[a-zA-Z]$/.test(k)){press(k.length===1?k.toLowerCase():k)}});
-function say(t){msg.textContent=t}
-function render(){var rw=rows[guesses.length];if(!rw)return;for(var i=0;i<LEN;i++){var ch=cur[i]||"";rw.tiles[i].textContent=ch;rw.tiles[i].className="tile"+(ch?" filled":"")}}
-function press(k){if(done)return;if(k==="Backspace"){cur=cur.slice(0,-1);render();return}
-if(k==="Enter"){submit();return}
-if(/^[a-z]$/.test(k)&&cur.length<LEN){cur+=k;render()}}
-function score(g){var res=[],pool={},i;for(i=0;i<LEN;i++){res[i]="miss";if(g[i]===ANSWER[i])res[i]="ok";else pool[ANSWER[i]]=(pool[ANSWER[i]]||0)+1}
-for(i=0;i<LEN;i++){if(res[i]!=="ok"&&pool[g[i]]>0){res[i]="near";pool[g[i]]--}}return res}
-function submit(){if(cur.length<LEN){var rw=rows[guesses.length];rw.el.classList.remove("shake");void rw.el.offsetWidth;rw.el.classList.add("shake");say("Not enough letters");return}
-var res=score(cur),idx=guesses.length,rank={miss:1,near:2,ok:3};
-for(var i=0;i<LEN;i++){rows[idx].tiles[i].className="tile "+res[i];var ch=cur[i];if(!keyState[ch]||rank[res[i]]>rank[keyState[ch]]){keyState[ch]=res[i];keys[ch].className="k "+res[i]}}
-guesses.push(cur);save();
-if(cur===ANSWER){done=true;say(WIN_NOTE);return}
-if(guesses.length===MAX){done=true;say("The word was GLOVE.");return}
-cur="";say("")}
-var SAVE="ourgames-wordle";
-function save(){try{localStorage.setItem(SAVE,JSON.stringify(guesses))}catch(e){}}
-document.getElementById("wclear").addEventListener("click",function(){
-guesses=[];cur="";done=false;keyState={};
-rows.forEach(function(rw){rw.tiles.forEach(function(t){t.textContent="";t.className="tile"})});
-Object.keys(keys).forEach(function(k){keys[k].className="k"});
-save();say("Guess the five-letter word in six tries.")});
-try{JSON.parse(localStorage.getItem(SAVE)||"[]").forEach(function(g){cur=g;submit()});cur="";render()}catch(e){}
+var hub=document.getElementById("hub");
+function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")};hub.hidden=!!pages[hash];Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});if(!pages[hash])hub.hidden=false;if(write&&location.hash!==(hash?'#'+hash:'')){if(hash)location.hash=hash;else history.replaceState(null,'',location.pathname+location.search)}window.scrollTo(0,0);if(hash==='strands')draw();if(hash==='connections')renderConn();}
+window.addEventListener("hashchange",function(){showPage(location.hash.slice(1),false)});
+window.addEventListener("popstate",function(){showPage(location.hash.slice(1),false)});
+window.addEventListener("load",function(){showPage(location.hash.slice(1),false)});
 })();
 </script>
+
 <script>
 (function(){
 var SP={w:"ROADTRIPS",p:[[4,5],[4,4],[5,3],[4,2],[4,3],[3,2],[4,1],[4,0],[5,1]],t:"sp"};
@@ -249,32 +194,44 @@ sm.textContent=status(false);paint();
 })();
 </script>
 
-
 <script>
 (function(){
- const hub=document.getElementById('hub'), page=document.getElementById('connections');
- const grid=document.getElementById('connGrid'), solvedEl=document.getElementById('connSolved');
- const status=document.getElementById('connStatus'), livesEl=document.getElementById('connLives');
+ const page=document.getElementById('connections'),grid=document.getElementById('connGrid'),solvedEl=document.getElementById('connSolved');
+ const status=document.getElementById('connStatus'),livesEl=document.getElementById('connLives'),SAVE='ourgames-connections';
  const groups=[
   {name:'Date activities we have done together',color:'green',words:['MOVIE','SYMPHONY','DINNER','HIKE']},
   {name:'Things we have gifted each other',color:'blue',words:['PILLOW','BACKPACK','ROPE','HAT']},
   {name:'Wearable climbing accessories',color:'yellow',words:['HELMET','HARNESS','CLIMBING SHOES','CHALK BAG']},
   {name:'Words after “love”',color:'purple',words:['BUG','BIRD','SICK','TRIANGLE']}
  ];
- let words=[],selected=[],found=[],mistakes=0,ended=false;
+ let words=[],selected=[],found=[],mistakes=0,ended=false,initialized=false;
  function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
- function start(){words=shuffle(groups.flatMap((g,i)=>g.words.map(w=>({word:w,group:i}))));selected=[];found=[];mistakes=0;ended=false;solvedEl.innerHTML='';livesEl.textContent='4';status.textContent='Select four words, then press Submit.';render();}
- function render(){grid.innerHTML='';words.filter(x=>!found.includes(x.group)).forEach(x=>{let b=document.createElement('button');b.type='button';b.className='conn-tile'+(selected.includes(x.word)?' selected':'');b.textContent=x.word;b.setAttribute('aria-pressed',selected.includes(x.word));b.addEventListener('click',()=>{if(ended)return;if(selected.includes(x.word))selected=selected.filter(w=>w!==x.word);else if(selected.length<4)selected.push(x.word);render();});grid.appendChild(b);});document.getElementById('connSubmit').disabled=selected.length!==4||ended;}
- function submit(){if(selected.length!==4||ended)return;let chosen=words.filter(x=>selected.includes(x.word));let ids=[...new Set(chosen.map(x=>x.group))];if(ids.length===1){let id=ids[0],g=groups[id];found.push(id);let row=document.createElement('div');row.className='conn-group conn-color-'+g.color;row.innerHTML='<strong>'+g.name+'</strong><span>'+g.words.join(' · ')+'</span>';solvedEl.appendChild(row);selected=[];status.textContent='Correct!';if(found.length===4){ended=true;status.textContent='Perfect! You found all four groups. You\'re on a roll! The bestest there ever was! ♥';}render();return;}
- mistakes++;livesEl.textContent=String(4-mistakes);let oneAway=ids.length===2&&chosen.filter(x=>x.group===ids[0]).length===3||ids.length===2&&chosen.filter(x=>x.group===ids[1]).length===3;status.textContent=oneAway?'One away…':'Not quite. Try another group.';selected=[];if(mistakes>=4){ended=true;status.textContent='Game over — the groups are revealed below.';groups.forEach((g,i)=>{if(!found.includes(i)){let row=document.createElement('div');row.className='conn-group conn-color-'+g.color;row.innerHTML='<strong>'+g.name+'</strong><span>'+g.words.join(' · ')+'</span>';solvedEl.appendChild(row);}});}render();}
- document.getElementById('goConnections').addEventListener('click',()=>{hub.hidden=true;page.hidden=false;start();window.scrollTo(0,0);});
- document.getElementById('connBack').addEventListener('click',()=>{page.hidden=true;hub.hidden=false;window.scrollTo(0,0);});
- document.getElementById('connShuffle').addEventListener('click',()=>{words=shuffle(words);render();});
- document.getElementById('connDeselect').addEventListener('click',()=>{selected=[];render();});
+ function progress(id,value){try{let p=JSON.parse(localStorage.getItem('anniversary-progress')||'{}');if(value===null)delete p[id];else p[id]=value;localStorage.setItem('anniversary-progress',JSON.stringify(p));if(window.refreshProgress)window.refreshProgress();}catch(e){}}
+ function save(){try{localStorage.setItem(SAVE,JSON.stringify({words:words.map(x=>x.word),found:found,mistakes:mistakes,ended:ended,selected:selected,status:status.textContent}));}catch(e){} }
+ function start(){words=shuffle(groups.flatMap((g,i)=>g.words.map(w=>({word:w,group:i}))));selected=[];found=[];mistakes=0;ended=false;initialized=true;progress('connections',null);status.textContent='Select four words, then press Submit.';save();renderConn();}
+ function renderConn(){if(!initialized){try{let v=JSON.parse(localStorage.getItem(SAVE)||'null');if(v&&Array.isArray(v.words)&&v.words.length===16){words=v.words.map(w=>{for(let i=0;i<groups.length;i++)if(groups[i].words.includes(w))return {word:w,group:i};return null}).filter(Boolean);if(words.length===16){found=v.found||[];mistakes=v.mistakes||0;ended=!!v.ended;selected=v.selected||[];status.textContent=v.status||'Select four words, then press Submit.';initialized=true;}}}catch(e){}if(!initialized){words=shuffle(groups.flatMap((g,i)=>g.words.map(w=>({word:w,group:i}))));selected=[];found=[];mistakes=0;ended=false;initialized=true;}}
+ grid.innerHTML='';solvedEl.innerHTML='';found.forEach(id=>addGroup(id));if(ended&&found.length+mistakes>=4){groups.forEach((g,i)=>{if(!found.includes(i))addGroup(i)});}
+ words.filter(x=>!found.includes(x.group)).forEach(x=>{let b=document.createElement('button');b.type='button';b.className='conn-tile'+(selected.includes(x.word)?' selected':'');b.textContent=x.word;b.setAttribute('aria-pressed',selected.includes(x.word));b.addEventListener('click',()=>{if(ended)return;if(selected.includes(x.word))selected=selected.filter(w=>w!==x.word);else if(selected.length<4)selected.push(x.word);renderConn();});grid.appendChild(b);});
+ livesEl.textContent=String(Math.max(0,4-mistakes));document.getElementById('connSubmit').disabled=selected.length!==4||ended;save();}
+ function addGroup(id){let g=groups[id],row=document.createElement('div');row.className='conn-group conn-color-'+g.color;let strong=document.createElement('strong'),span=document.createElement('span');strong.textContent=g.name;span.textContent=g.words.join(' · ');row.appendChild(strong);row.appendChild(span);solvedEl.appendChild(row);}
+ function submit(){if(selected.length!==4||ended)return;let chosen=words.filter(x=>selected.includes(x.word)),ids=[...new Set(chosen.map(x=>x.group))];if(ids.length===1){let id=ids[0];found.push(id);selected=[];status.textContent='Correct!';if(found.length===4){ended=true;status.textContent="Perfect! You found all four groups. You\'re on a roll! The bestest there ever was! ♥";progress('connections',{complete:true,line:mistakes===0?'Solved with no mistakes':'Solved with '+mistakes+' mistake'+(mistakes===1?'':'s')});}renderConn();return;}
+ mistakes++;let oneAway=ids.length===2&&(chosen.filter(x=>x.group===ids[0]).length===3||chosen.filter(x=>x.group===ids[1]).length===3);status.textContent=oneAway?'One away…':'Not quite. Try another group.';selected=[];if(mistakes>=4){ended=true;status.textContent='Game over — the groups are revealed below.';}renderConn();}
+ document.getElementById('goConnections').addEventListener('click',()=>showPage('connections',true));
+ document.getElementById('connBack').addEventListener('click',()=>showPage('',true));
+ document.getElementById('connShuffle').addEventListener('click',()=>{words=shuffle(words);renderConn();});
+ document.getElementById('connDeselect').addEventListener('click',()=>{selected=[];renderConn();});
  document.getElementById('connReset').addEventListener('click',start);
  document.getElementById('connSubmit').addEventListener('click',submit);
+ window.renderConn=renderConn;
 })();
 </script>
 
+<script>
+(function(){
+ function read(){try{return JSON.parse(localStorage.getItem('anniversary-progress')||'{}')}catch(e){return {}}}
+ function refresh(){var p=read(),ids=['wordle','strands','connections','pips','crossword'],count=0;ids.forEach(function(id){var card=document.querySelector('[data-game="'+id+'"]');if(!card)return;var old=card.querySelector('.progressLine');if(old)old.remove();card.classList.toggle('complete',!!(p[id]&&p[id].complete));if(p[id]&&p[id].complete){count++;var line=document.createElement('p');line.className='progressLine';line.textContent='✓ '+p[id].line;card.querySelector('.body').insertBefore(line,card.querySelector('.btn'));}});var e=document.getElementById('progressSummary');if(e)e.textContent=count===5?'All five complete ♥':count+' of 5 puzzles complete';}
+ window.addEventListener('storage',refresh);window.addEventListener('pageshow',refresh);window.refreshProgress=refresh;document.addEventListener('DOMContentLoaded',refresh);refresh();
+})();
+</script>
 </body>
 </html>
