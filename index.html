@@ -86,7 +86,10 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 #returnLetter.visible{display:inline-block}
 #finalReveal .eyebrow{font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--sub);margin:0 0 12px}
 #finalReveal h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,6vw,43px);line-height:1.15;letter-spacing:-.6px;margin:0 0 20px;color:var(--fg);font-weight:500}
-#finalReveal .couple-photo{display:block;width:100%;max-width:490px;max-height:620px;object-fit:contain;margin:0 auto 24px;border-radius:5px;box-shadow:0 12px 32px rgba(43,21,32,.13);border:1px solid var(--line);background:var(--card)}
+#finalReveal .photo-frame{position:relative;width:min(100%,430px);margin:2px auto 28px;padding:9px;background:var(--card);border:1px solid var(--line);box-shadow:0 16px 38px rgba(43,21,32,.12)}
+#finalReveal .photo-frame::after{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--line) 65%,transparent);pointer-events:none}
+#finalReveal .couple-photo{display:block;width:100%;height:auto;max-height:none;object-fit:contain;margin:0;border-radius:1px;position:relative;z-index:1}
+#finalReveal .letter-title{font:500 clamp(23px,4.8vw,31px)/1.25 Georgia,'Times New Roman',serif;margin:0 auto 22px;max-width:520px;letter-spacing:-.25px}
 #finalReveal .letter-title{font:500 clamp(23px,4.8vw,31px)/1.25 Georgia,'Times New Roman',serif;margin:0 auto 20px;max-width:520px}
 #openLetter{margin:0 auto;padding:12px 26px;border-radius:999px;border:1px solid var(--rose);background:var(--rose);color:#fff;font:600 15px 'Helvetica Neue',Arial,sans-serif;cursor:pointer;transition:transform .18s,box-shadow .18s}
 #openLetter:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(184,50,90,.18)}
@@ -94,6 +97,16 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 #letterPlaceholder.open{display:block}
 @keyframes revealIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){#finalReveal{animation:none}#openLetter{transition:none}}
+/* Standalone letter page */
+#letterPage{display:none;min-height:100vh;position:relative;padding:84px 22px 56px;animation:revealIn .45s ease both}
+#letterPage.active{display:block}
+#closeLetterPage{position:absolute;top:calc(18px + env(safe-area-inset-top,0px));right:20px;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--fg);font:400 27px/1 'Helvetica Neue',Arial,sans-serif;display:grid;place-items:center;cursor:pointer;box-shadow:0 3px 12px rgba(43,21,32,.06)}
+#closeLetterPage:hover{background:var(--key)}
+#letterPageInner{max-width:650px;margin:0 auto}
+#letterPageTitle{font:500 clamp(31px,6vw,46px)/1.15 Georgia,'Times New Roman',serif;text-align:center;margin:0 auto 34px;max-width:560px}
+#letterPaper{min-height:260px;padding:clamp(24px,5vw,48px);border:1px solid var(--line);background:var(--card);box-shadow:0 16px 42px rgba(43,21,32,.08);font:17px/1.85 Georgia,'Times New Roman',serif;color:var(--fg);white-space:pre-wrap}
+#letterPaper .placeholder{color:var(--sub);font-style:italic}
+@media(prefers-reduced-motion:reduce){#letterPage{animation:none}}
 
 </style>
 </head>
@@ -135,10 +148,17 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
   <div class="reveal-rule"></div>
   <p class="eyebrow">For you, always</p>
   <h2 id="revealHeading">You made it. <span style="color:var(--rose)">♥</span></h2>
-  <img class="couple-photo" src="./anniversary-photo.jpg" alt="The two of us sitting together among the rocks on an outdoor adventure" loading="lazy">
+  <div class="photo-frame"><img class="couple-photo" src="./anniversary-photo.jpg" alt="The two of us sitting together among the rocks on an outdoor adventure" loading="lazy"></div>
   <h3 class="letter-title">A special letter for my special boy</h3>
   <button id="openLetter" type="button" aria-expanded="false" aria-controls="letterPlaceholder">Open your letter ♥</button>
-  <div id="letterPlaceholder" role="region" aria-label="Anniversary letter">Your letter will go here when you're ready to add it. ♥</div>
+</section>
+
+<section id="letterPage" aria-labelledby="letterPageTitle" hidden>
+  <button id="closeLetterPage" type="button" aria-label="Close letter and return to photo" title="Back to photo">×</button>
+  <div id="letterPageInner">
+    <h1 id="letterPageTitle">A special letter for my special boy</h1>
+    <article id="letterPaper" role="article" aria-label="Anniversary letter"><span class="placeholder">Your letter will go here when you're ready to add it. ♥</span></article>
+  </div>
 </section>
 
 <div id="strands" hidden>
@@ -169,7 +189,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;letter-spacing:.15px;pa
 <script>
 (function(){
 var hub=document.getElementById("hub");
-function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")},reveal=document.getElementById("finalReveal"),unlocked=reveal&&reveal.classList.contains("unlocked");if(hash==="letter"&&unlocked){hub.hidden=true;reveal.style.display="block";Object.keys(pages).forEach(function(k){pages[k].hidden=true});}else if(hash==="strands"||hash==="connections"){hub.hidden=true;reveal.style.display="none";Object.keys(pages).forEach(function(k){pages[k].hidden=k!==hash});}else{Object.keys(pages).forEach(function(k){pages[k].hidden=true});if(unlocked&&hash!=="games"){hub.hidden=true;reveal.style.display="block";hash="letter";}else{hub.hidden=false;reveal.style.display="none";hash=hash==="games"?"games":"";}}if(write&&location.hash!== (hash?"#"+hash:"")){if(hash)location.hash=hash;else history.replaceState(null,"",location.pathname+location.search)}window.scrollTo(0,0);if(hash==="strands")draw();if(hash==="connections"&&window.renderConn)window.renderConn();}
+function showPage(hash,write){var pages={strands:document.getElementById("strands"),connections:document.getElementById("connections")},reveal=document.getElementById("finalReveal"),letterPage=document.getElementById("letterPage"),unlocked=reveal&&reveal.classList.contains("unlocked");Object.keys(pages).forEach(function(k){pages[k].hidden=true});hub.hidden=true;if(reveal)reveal.style.display="none";if(letterPage){letterPage.classList.remove("active");letterPage.hidden=true;}if((hash==="letter"||hash==="letter-content")&&unlocked){if(hash==="letter-content"){letterPage.hidden=false;letterPage.classList.add("active");}else{reveal.style.display="block";}}else if(hash==="strands"||hash==="connections"){pages[hash].hidden=false;}else{hub.hidden=false;hash=hash==="games"?"games":"";}if(write&&location.hash!==(hash?"#"+hash:"")){if(hash)location.hash=hash;else history.replaceState(null,"",location.pathname+location.search)}window.scrollTo(0,0);if(hash==="strands")draw();if(hash==="connections"&&window.renderConn)window.renderConn();}
 window.showPage=showPage;
 window.addEventListener("hashchange",function(){showPage(location.hash.slice(1),false)});
 window.addEventListener("popstate",function(){showPage(location.hash.slice(1),false)});
@@ -271,10 +291,11 @@ syncProgress();sm.textContent=status(false);paint();
 </script>
 <script>
 (function(){
- var btn=document.getElementById('openLetter'),letter=document.getElementById('letterPlaceholder');
- if(!btn||!letter)return;
- btn.addEventListener('click',function(){var open=letter.classList.toggle('open');btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'Close your letter ♥':'Open your letter ♥';});
- var back=document.getElementById('backToGames'),shortcut=document.getElementById('returnLetterFromGames');if(back)back.addEventListener('click',function(){window.showPage('games',true)});if(shortcut)shortcut.addEventListener('click',function(){window.showPage('letter',true)});
+ var btn=document.getElementById('openLetter'),back=document.getElementById('backToGames'),shortcut=document.getElementById('returnLetterFromGames'),close=document.getElementById('closeLetterPage');
+ if(btn)btn.addEventListener('click',function(){window.showPage('letter-content',true)});
+ if(back)back.addEventListener('click',function(){window.showPage('games',true)});
+ if(shortcut)shortcut.addEventListener('click',function(){window.showPage('letter',true)});
+ if(close)close.addEventListener('click',function(){window.showPage('letter',true)});
 })();
 </script>
 </body>
