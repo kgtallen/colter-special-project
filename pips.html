@@ -28,37 +28,45 @@ button:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
 #info{width:calc(var(--cs)*8 + 24px);margin:10px 0 0;padding:12px 14px;border-radius:12px;background:#fff;color:#2b1520;font-size:13px;line-height:1.5}
 #info p{margin:0 0 6px}
 #msg{min-height:44px;width:calc(var(--cs)*8 + 24px);margin:10px 0 0;text-align:center;font-weight:600;font-size:15px;line-height:1.4}
-#board{position:relative;margin:22px 0 22px;touch-action:none;user-select:none;-webkit-user-select:none}
+#board{position:relative;margin:22px 0 22px;touch-action:none;user-select:none;-webkit-user-select:none;isolation:isolate}
 .grid{display:grid;grid-template-columns:repeat(8,var(--cs));grid-auto-rows:var(--cs)}
-.halo{position:absolute;inset:0;pointer-events:none}
-.halo .h{background:#dccfc6;box-shadow:0 0 0 8px #dccfc6;border-radius:6px}
+.halo{position:absolute;inset:0;pointer-events:none;filter:drop-shadow(0 4px 5px rgba(83,43,54,.13))}
+.halo .h{background:#e6d5ce;box-shadow:0 0 0 6px #e6d5ce, inset 0 0 0 1px rgba(255,255,255,.48);border-radius:8px}
 .halo .h.off{background:transparent;box-shadow:none}
 .cells{position:relative}
-.c{position:relative;box-shadow:inset 0 0 0 .5px rgba(60,60,90,.16)}
+.c{position:relative;box-shadow:inset 0 0 0 1px rgba(77,48,53,.07);transition:filter .12s ease}
 .c.off{pointer-events:none;box-shadow:none}
 .edge{position:absolute;inset:1px;pointer-events:none;z-index:4}
 .c.ok{box-shadow:inset 0 0 0 3px #2e9e5b}
 .c.no{box-shadow:inset 0 0 0 3px #d9453d}
 .dia{position:absolute;right:0;bottom:0;width:calc(var(--cs)*.5);height:calc(var(--cs)*.5);transform:translate(50%,50%) rotate(45deg);border-radius:4px;display:flex;align-items:center;justify-content:center;z-index:8;box-shadow:0 1px 2px rgba(0,0,0,.2)}
 .dia span{transform:rotate(-45deg);color:#fff;font:800 calc(var(--cs)*.27)/1 "Helvetica Neue",Arial,sans-serif;white-space:nowrap}
-.ptile{position:absolute;inset:0;z-index:3;display:block;background:#fff;box-sizing:border-box;overflow:hidden;pointer-events:none}
+.ptile{position:absolute;inset:0;z-index:3;display:block;background:#fffdf9;box-sizing:border-box;overflow:hidden;pointer-events:none}
 .half{--h:var(--cs);width:var(--h);height:var(--h);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:calc(var(--h)*.17);flex:none}
 .half i{width:76%;height:76%;border-radius:50%;background:#58595c;place-self:center}
 .half i.off{visibility:hidden}
 .ptile .half{display:grid;width:100%;height:100%;min-width:0;min-height:0;--h:var(--cs);padding:calc(var(--cs)*.17);flex:none}
-#tray{width:calc(var(--cs)*8 + 24px);display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px;margin-top:4px}
-.slot{height:96px;display:flex;align-items:center;justify-content:center}
-.dom{--h:40px;display:flex;background:#fff;border-radius:11px;border:2px solid #b9b6b4;box-shadow:0 5px 0 #a9a6a4;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.tray-panel{width:calc(var(--cs)*8 + 24px);margin-top:8px;padding:14px 12px 12px;background:rgba(255,255,255,.42);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 14px rgba(75,35,48,.045)}
+.tray-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 3px 10px;color:var(--sub);font-size:10px;font-weight:800;letter-spacing:.13em}
+#trayCount{font-size:11px;letter-spacing:.02em;font-weight:600;text-transform:none;color:var(--rose);background:rgba(184,50,90,.08);border-radius:999px;padding:5px 8px;white-space:nowrap}
+#tray{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px 10px;margin-top:0}
+.slot{height:84px;min-width:0;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .16s ease;position:relative}
+.slot:not(.used){background:rgba(255,255,255,.36)}
+.dom{--h:36px;display:flex;flex:0 0 auto;align-self:center;margin:0 auto;position:relative;left:0;background:#fffdf9;border-radius:9px;border:1px solid #e4cbd1;box-shadow:0 3px 0 #d9bdc5,0 5px 10px rgba(73,29,44,.07);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
 .dom.v{flex-direction:column}
 .dom .half{width:var(--h);height:var(--h)}
-.dom:not(.v) .half+.half{border-left:2px solid #d3d0ce}
-.dom.v .half+.half{border-top:2px solid #d3d0ce}
+.dom .half i{background:#7f2945}
+.dom:not(.v) .half+.half{border-left:1px solid #ead9dd}
+.dom.v .half+.half{border-top:1px solid #ead9dd}
+@media (hover:hover){.dom:hover{transform:translateY(-2px);border-color:#c98297;box-shadow:0 5px 0 #d9bdc5,0 8px 13px rgba(73,29,44,.11)}}
+.dom:active{cursor:grabbing}
 .slot.used .dom{visibility:hidden}
-.ghost{position:fixed;z-index:60;pointer-events:none;display:flex;background:#fff;border-radius:12px;border:2px solid #7d7a78;box-shadow:0 10px 22px rgba(0,0,0,.3);opacity:.96;overflow:hidden}
+.ghost{position:fixed;z-index:60;pointer-events:none;display:flex;background:#fffdf9;border-radius:10px;border:1px solid #c98297;box-shadow:0 10px 24px rgba(73,29,44,.22);opacity:.97;overflow:hidden}
 .ghost.v{flex-direction:column}
-.ghost .half+.half{border-left:2px solid #d3d0ce}
-.ghost.v .half+.half{border-left:0;border-top:2px solid #d3d0ce}
+.ghost .half+.half{border-left:1px solid #ead9dd}
+.ghost.v .half+.half{border-left:0;border-top:1px solid #ead9dd}
 .hint{margin-top:14px;color:var(--sub);font-size:13px;text-align:center;max-width:340px}
+@media(max-width:420px){.tray-panel{padding:10px 8px 8px}.slot{height:76px}.dom{--h:30px}#tray{gap:10px 8px}.tray-heading{padding-bottom:8px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -75,7 +83,7 @@ button:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
 </div>
 <div id="board" aria-label="Heart-shaped domino puzzle"></div>
 <div id="msg" role="status" aria-live="polite"></div>
-<div id="tray" aria-label="Your dominoes"></div>
+<section class="tray-panel" aria-label="Domino tray"><div class="tray-heading"><span>DOMINO TRAY</span><span id="trayCount">16 remaining</span></div><div id="tray" aria-label="Your dominoes"></div></section>
 <script>
 (function(){
 "use strict";
@@ -170,6 +178,8 @@ function tileEl(p,ori,cls,h){var t=document.createElement("div");t.className=cls
  vals(p,ori).forEach(function(v){var x=half(v);if(h){x.style.width=h+"px";x.style.height=h+"px"}t.appendChild(x)});return t}
 function renderTray(){
  tray.innerHTML="";
+ var remaining=pieces.filter(function(p){return !p.pos&&!p.floating}).length;
+ var countEl=document.getElementById("trayCount");if(countEl)countEl.textContent=remaining+" remaining";
  pieces.forEach(function(p){
   var slot=document.createElement("div");slot.className="slot"+(p.pos||p.floating?" used":"");
   var t=tileEl(p,p.ori,"dom");t.dataset.id=p.id;slot.appendChild(t);tray.appendChild(slot);
