@@ -129,8 +129,9 @@ function celebrate(){
  }
  requestAnimationFrame(frame);
 }
+function setProgress(value){try{var p=JSON.parse(localStorage.getItem("anniversary-progress")||"{}");if(value===null)delete p.crossword;else p.crossword=value;localStorage.setItem("anniversary-progress",JSON.stringify(p))}catch(e){}}
 function status(){var all=true,ok=true;for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c))continue;if(!fill[r][c])all=false;else if(fill[r][c]!==ROWS[r].charAt(c))ok=false}
-var win=all&&ok;if(win){if(!solved){solved=true;pauseT();celebrate()}}else solved=false;
+var win=all&&ok;if(win){if(!solved){solved=true;pauseT();celebrate();setProgress({complete:true,line:"Finished in "+fmt(nowT())})}}else solved=false;
 msg.textContent=win?WIN+" Time: "+fmt(nowT()):(all?"Every square is filled, but something\u2019s off. Try Check.":"")}
 function focusIn(){if(inp){try{inp.focus({preventScroll:true})}catch(e){inp.focus()}}}
 var picked=false;
@@ -156,7 +157,7 @@ else if(k==="Tab"||k==="Enter"){go(idx()+(e.shiftKey?-1:1));e.preventDefault()}
 else if(k===" "){var o=dir==="A"?"D":"A";if(wordAt(sel[0],sel[1],o).length>1){dir=o;render()}e.preventDefault()}})}
 document.getElementById("check").addEventListener("click",function(){var wrong=0;bad={};for(var r=0;r<N;r++)for(var c=0;c<N;c++){if(isB(r,c)||!fill[r][c])continue;if(fill[r][c]!==ROWS[r].charAt(c)){bad[r+","+c]=1;wrong++}}
 render();status();if(!msg.textContent)msg.textContent=wrong?wrong+(wrong===1?" square needs":" squares need")+" another look.":"No mistakes so far!"});
-document.getElementById("clear").addEventListener("click",function(){for(var r=0;r<N;r++)for(var c=0;c<N;c++)fill[r][c]="";bad={};msg.textContent="";elapsed=0;startAt=null;solved=false;sel=starts.A[1].slice();dir="A";picked=false;var confetti=document.getElementById("confetti");if(confetti)confetti.remove();saveT();tick();persist();render();status()});
+document.getElementById("clear").addEventListener("click",function(){for(var r=0;r<N;r++)for(var c=0;c<N;c++)fill[r][c]="";bad={};msg.textContent="";elapsed=0;startAt=null;solved=false;setProgress(null);sel=starts.A[1].slice();dir="A";picked=false;var confetti=document.getElementById("confetti");if(confetti)confetti.remove();saveT();tick();persist();render();status()});
 entries.forEach(function(en){var box=document.getElementById(en.d==="A"?"la":"ld"),b=document.createElement("button");b.type="button";b.className="ci";var bb=document.createElement("b");bb.textContent=en.n;b.appendChild(bb);b.appendChild(document.createTextNode(CL[en.d][en.n]));
 b.addEventListener("click",function(){sel=en.at.slice();dir=en.d;render();focusIn();if(window.innerWidth<900)window.scrollTo(0,0)});box.appendChild(b);en.el=b});
 try{var sv=localStorage.getItem(SAVE);if(sv){sv.split("|").forEach(function(row,r){row.split("").forEach(function(ch,c){if(ch!=="."&&r<N&&c<N&&!isB(r,c))fill[r][c]=ch})})}}catch(e){}
